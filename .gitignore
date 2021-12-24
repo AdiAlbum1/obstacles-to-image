@@ -1,6 +1,7 @@
 # PyCharm files
 
 .idea/
+__pycache__/
 
 # Virtual Enviorment
 
