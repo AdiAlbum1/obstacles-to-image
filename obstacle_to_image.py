@@ -16,13 +16,6 @@ def max_abs_value(obstacle):
     return max_val
 
 
-def create_white_background_image(height, width):
-    img = np.zeros((height, width, 3), np.uint8)
-    img.fill(255)
-
-    return img
-
-
 def read_obstacles_from_json(filename):
     input_file = open(filename)
     data = json.load(input_file)
@@ -49,8 +42,8 @@ def draw_obstacle(img, obstacle, im_height, im_width, axis_range):
     curr_obstacle = np.array(curr_obstacle, np.int32)
     curr_obstacle = curr_obstacle.reshape((-1, 1, 2))
 
-    # color obstacle in gray
-    cv.fillPoly(img, [curr_obstacle], (0, 0, 0))
+    # color obstacle in white
+    cv.fillPoly(img, [curr_obstacle], (255, 255, 255))
 
     return img
 
@@ -64,7 +57,8 @@ if __name__ == "__main__":
 
     obstacles = read_obstacles_from_json(filename)
 
-    img = create_white_background_image(im_height, im_width)
+    # Initialize a black background image
+    img = np.zeros((im_height, im_width, 3), np.uint8)
 
     for obstacle in obstacles:
         # eliminate obstacles outside of range x in [-axis_range, axis_range] and y in [-axis_range, axis_range]
