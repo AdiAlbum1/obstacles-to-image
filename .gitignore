@@ -9,4 +9,4 @@ venv/
 # Data
 
 input_obstacles/*
-!input_obstacles/
+!input_obstacles/.gitkeep
