@@ -5,3 +5,7 @@
 # Virtual Enviorment
 
 venv/
+
+# Data
+
+input_obstacles/*
