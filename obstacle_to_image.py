@@ -49,7 +49,7 @@ def draw_obstacle(img, obstacle, im_height, im_width, axis_range):
 
 
 if __name__ == "__main__":
-    filename = "input_obstacles\\(0,0)_base_2.json"
+    filename = "input_obstacles\\1_0\\7.json"
 
     im_height = params.im_height
     im_width = params.im_width
