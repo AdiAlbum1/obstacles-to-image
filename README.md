@@ -21,7 +21,10 @@ pip install -r requirments.txt
 
 ## Project Description
 - ```python stage_1.py ``` : Reads as input the JSON files from ```input_json_obstacles/``` contatining the scene's description, and generates binary images of the scene's obstacles
-- ```python augment_image.py ``` : Generates augmentations of the obstacle images
+- ``` python stage_2.py``` : Randomly augments obstacles onto the images of the scenes
+- ``` python stage_3.py``` : Translate each scene along the y-axis, and rotate at 90, 180, and 270 degrees
+- ``` python train_cnn.py``` : Trains a Convolutional Neural Network for the above regression task
+- ``` improved_prm.py``` : Our product. An improved PRM implementation where the first sampled point is given by the CNN
 
 ## Usage
 TBD
