@@ -9,5 +9,5 @@ venv/
 
 # Data
 
-input_obstacles/*
-!input_obstacles/.gitkeep
+input_json_obstacles/*
+!input_json_obstacles/.gitkeep
