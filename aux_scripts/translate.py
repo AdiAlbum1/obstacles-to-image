@@ -1,4 +1,4 @@
-from .. import params
+import params
 
 def coordinates_to_pixels(x, y):
     row = y
