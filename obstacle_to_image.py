@@ -34,8 +34,8 @@ def draw_obstacle(img, obstacle, im_height, im_width, axis_range):
         curr_vertex[1] += axis_range
 
         # scale vertex
-        curr_vertex[0] = int(curr_vertex[0] * im_width / (2 * axis_range))
-        curr_vertex[1] = int(curr_vertex[1] * im_height / (2 * axis_range))
+        curr_vertex[0] = round(curr_vertex[0] * im_width / (2 * axis_range))
+        curr_vertex[1] = round(curr_vertex[1] * im_height / (2 * axis_range))
 
         curr_obstacle.append(curr_vertex)
 
@@ -49,7 +49,7 @@ def draw_obstacle(img, obstacle, im_height, im_width, axis_range):
 
 
 if __name__ == "__main__":
-    filename = "input_obstacles\\1_0\\7.json"
+    filename = "input_obstacles\\0_0\\7.json"
 
     im_height = params.im_height
     im_width = params.im_width
