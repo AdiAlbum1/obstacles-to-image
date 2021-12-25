@@ -20,7 +20,7 @@ pip install -r requirments.txt
 ```
 
 ## Project Description
-- ```python obstacle_to_image.py ``` : Reads an input a JSON file contatining the scene's description, and generates a binary image of the scene's obstacles
+- ```python stage_1.py ``` : Reads as input the JSON files from ```input_json_obstacles/``` contatining the scene's description, and generates binary images of the scene's obstacles
 - ```python augment_image.py ``` : Generates augmentations of the obstacle images
 
 ## Usage
