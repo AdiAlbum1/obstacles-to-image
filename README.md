@@ -32,7 +32,7 @@ pip install -r requirments.txt
    The generated scenes contain various obstacle maps with horizontal passageways at positions (0,0), (1,0), ..., (8,0)
    as in the following images
     * (0,0):
-    <br>![(0,0) - Example](base_(0,0).png)
+    <br>![(0,0) - Example](samples/base_(0,0).png)
     * (3,0):
     <br>TBD
 
