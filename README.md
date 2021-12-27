@@ -26,7 +26,7 @@ pip install -r requirments.txt
 - ``` improved_prm.py``` : Our product. An improved PRM implementation where the first sampled point is given by the CNN
 
 ## Training Procedure
-# Data
+### Data
 1. Randomly select a base obstacle map with a single critical passageway.
    <br>We manually generated multiple base obstacles maps with single critical passageways using CGAL's scene designer.
    The JSON files describing the scenes were tranformed to images using ```generate_base_obstacle_images.py```
@@ -57,7 +57,7 @@ pip install -r requirments.txt
     * ![(0,0) - With ground truth](samples/base_(0,0)\_with_obstacles_gt.png)
     * ![(3,0) - With ground truth](samples/base_(3,0)\_with_obstacles_gt.png)
 
-# Model
+### Model
 
 ## Usage
 TBD
