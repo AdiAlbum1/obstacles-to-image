@@ -13,3 +13,7 @@ input_json_obstacles/*
 !input_json_obstacles/.gitkeep
 input_png_obstacles/*
 !input_png_obstacles/.gitkeep
+
+# MLFlow
+mlruns/*
+!mlruns/.gitkeep
