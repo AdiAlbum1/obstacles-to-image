@@ -52,5 +52,8 @@ pip install -r requirments.txt
     * ![(0,0) - With scattered obstacles](samples/base_(0,0)\_with_obstacles.png)
     * ![(3,0) - With scattered obstacles](samples/base_(3,0)\_with_obstacles.png)
 
+5. Ground truth positions are maintained with above augmentations
+    * ![(0,0) - With ground truth](samples/base_(0,0)\_with_obstacles_gt.png)
+    * ![(3,0) - With ground truth](samples/base_(3,0)\_with_obstacles_gt.png)
 ## Usage
 TBD
