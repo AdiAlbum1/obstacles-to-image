@@ -33,7 +33,7 @@ pip install -r requirments.txt
    The JSON files describing the scenes were tranformed to images using ```stage_1.py```
    The generated scenes contain various obstacle maps with passageways at positions (0,0), (1,0), ..., (8,0)
    as in the following images
-   <br>![(0,0) - Example 1](samples/(0,0)\_1.png)   ![(0,0) - Example 2](samples/(0,0)\_2.png)   ![(3,0) - Example 1](samples/(3,0)\_1.png)   ![(3,0) - Example 2](samples/(3,0)\_2.png)   ![(6,0) - Example 1](samples/(6,0)\_1.png)   ![(6,0) - Example 2](samples/(6,0)\_2.png)
+   <br>![(0,0) - Example 1](samples/(0,0)\_1.png)*(0,0) - Example 1*   ![(0,0) - Example 2](samples/(0,0)\_2.png)   ![(3,0) - Example 1](samples/(3,0)\_1.png)   ![(3,0) - Example 2](samples/(3,0)\_2.png)   ![(6,0) - Example 1](samples/(6,0)\_1.png)   ![(6,0) - Example 2](samples/(6,0)\_2.png)
 
 ## Usage
 TBD
