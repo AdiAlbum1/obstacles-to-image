@@ -37,22 +37,16 @@ pip install -r requirments.txt
     <br>![(3,0) - Example](samples/base_(3,0).png)
 
 2. Randomly translate the obstacle map along the y-axis
-    *
-    <br>![(0,0) - Example translated](samples/base_(0,0)\_translated.png)
-    *
-    <br>![(3,0) - Example translated](samples/base_(3,0)\_translated.png)
+    * <br>![(0,0) - Example translated](samples/base_(0,0)\_translated.png)
+    * <br>![(3,0) - Example translated](samples/base_(3,0)\_translated.png)
 
 3. Randomly rotate the image around its center with {0, 90, 180, 270} degrees
-    *
-    <br>![(0,0) - Example rotated](samples/base_(0,0)\_rotated.png)
-    *
-    <br>![(3,0) - Example rotated](samples/base_(3,0)\_rotated.png)
+    * <br>![(0,0) - Example rotated](samples/base_(0,0)\_rotated.png)
+    * <br>![(3,0) - Example rotated](samples/base_(3,0)\_rotated.png)
 
 4. Randomly scattered additional obstacles
-    *
-    <br>![(0,0) - With scattered obstacles](samples/base_(0,0)\_with_obstacles.png)
-    *
-    <br>![(3,0) - With scattered obstacles](samples/base_(3,0)\_with_obstacles.png)
+    * <br>![(0,0) - With scattered obstacles](samples/base_(0,0)\_with_obstacles.png)
+    * <br>![(3,0) - With scattered obstacles](samples/base_(3,0)\_with_obstacles.png)
 
 ## Usage
 TBD
