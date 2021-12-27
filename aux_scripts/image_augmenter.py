@@ -27,9 +27,7 @@ def translate_along_y_axis(image):
     return result, pixel_row
 
 def randomly_generate_obstacles_avoiding_passageway(forbidden_row, forbidden_col):
-    MAX_RANDOM_OBSTACLES = 25
-
-    num_obstacles = random.randint(0, MAX_RANDOM_OBSTACLES)
+    num_obstacles = random.randint(0, params.max_obstacles)
 
     # create obstacle background - a black image
     all_img = np.zeros((params.im_height, params.im_width, 1), np.uint8)

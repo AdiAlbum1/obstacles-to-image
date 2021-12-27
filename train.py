@@ -11,6 +11,8 @@ import torch.optim as optim
 import params
 from aux_scripts import translate, image_augmenter
 
+import mlflow
+
 def generate_batch(batch_size):
     images_batch = []
     labels_batch = []
@@ -90,31 +92,36 @@ if __name__ == "__main__":
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
     test_images, test_labels = generate_batch(params.test_set_size)
-    test_images = torch.from_numpy(test_images)
-    test_labels = torch.from_numpy(test_labels)
+    test_images, test_labels = torch.from_numpy(test_images), torch.from_numpy(test_labels)
 
-    for epoch in range(params.num_epochs):
+    with mlflow.start_run():
+        for epoch in range(params.num_epochs):
 
-        running_loss = 0.0
-        for i in range(params.num_batches_in_epoch):
-            # generate batch
-            images_batch, labels_batch = generate_batch(params.batch_size)
-            images_batch = torch.from_numpy(images_batch)
-            labels_batch = torch.from_numpy(labels_batch)
+            running_loss = 0.0
+            train_loss = 0
+            for i in range(params.num_batches_in_epoch):
+                # generate batch
+                images_batch, labels_batch = generate_batch(params.batch_size)
+                images_batch, labels_batch = torch.from_numpy(images_batch), torch.from_numpy(labels_batch)
 
-            # zero the parameter gradients
-            optimizer.zero_grad()
+                # zero the parameter gradients
+                optimizer.zero_grad()
 
-            # forward + backward + optimize
-            outputs = net(images_batch.float())
-            loss = criterion(outputs, labels_batch.float())
-            loss.backward()
-            optimizer.step()
+                # forward + backward + optimize
+                outputs = net(images_batch.float())
+                loss = criterion(outputs, labels_batch.float())
+                train_loss += loss.item()
+                loss.backward()
+                optimizer.step()
 
-        # calculate test loss per epoch
-        test_loss = 0
-        test_outputs = net(test_images.float())
-        test_loss = criterion(test_outputs, test_labels.float())
-        print("TEST LOSS: " + str(test_loss.item()))
 
-    print('Finished Training')
+            train_loss = train_loss / params.num_batches_in_epoch
+            # calculate test loss per epoch
+            test_outputs = net(test_images.float())
+            test_loss = criterion(test_outputs, test_labels.float()).item()
+            print("TEST LOSS: " + str(test_loss))
+
+            mlflow.log_metrics({"train_loss" : train_loss, "test_loss" : test_loss})
+        mlflow.log_artifacts("outputs")
+
+        print('Finished Training')
