@@ -21,14 +21,14 @@ pip install -r requirments.txt
 ```
 
 ## Project Description
-- ```python stage_1.py ``` : Reads as input the JSON files from ```input_json_obstacles/``` contatining the scene's description, and generates binary images of the scene's obstacles
+- ```python generate_base_obstacle_images.py ``` : Reads as input the JSON files from ```input_json_obstacles/``` contatining the scene's description, and generates binary images of the scene's obstacles
 - ``` python train.py``` : Trains a Convolutional Neural Network for the above regression task
 - ``` improved_prm.py``` : Our product. An improved PRM implementation where the first sampled point is given by the CNN
 
 ## Training Procedure
 1. Randomly select a base obstacle map with a single critical passageway.
    <br>We manually generated multiple base obstacles maps with single critical passageways using CGAL's scene designer.
-   The JSON files describing the scenes were tranformed to images using ```stage_1.py```
+   The JSON files describing the scenes were tranformed to images using ```generate_base_obstacle_images.py```
    The generated scenes contain various obstacle maps with horizontal passageways at positions (0,0), (1,0), ..., (8,0)
    as in the following images
     * (0,0):
@@ -55,6 +55,6 @@ pip install -r requirments.txt
 5. Ground truth positions are maintained with above augmentations
     * ![(0,0) - With ground truth](samples/base_(0,0)\_with_obstacles_gt.png)
     * ![(3,0) - With ground truth](samples/base_(3,0)\_with_obstacles_gt.png)
-    
+
 ## Usage
 TBD
