@@ -5,6 +5,7 @@
 - [Task](#task)
 - [Installation](#installation)
 - [Project Description](#project_description)
+- [Training Procedure](#training_procedure)
 - [Usage](#usage)
 
 ## Task
@@ -23,8 +24,16 @@ pip install -r requirments.txt
 - ```python stage_1.py ``` : Reads as input the JSON files from ```input_json_obstacles/``` contatining the scene's description, and generates binary images of the scene's obstacles
 - ``` python stage_2.py``` : Randomly augments obstacles onto the images of the scenes
 - ``` python stage_3.py``` : Translate each scene along the y-axis, and rotate at 90, 180, and 270 degrees
-- ``` python train_cnn.py``` : Trains a Convolutional Neural Network for the above regression task
+- ``` python train.py``` : Trains a Convolutional Neural Network for the above regression task
 - ``` improved_prm.py``` : Our product. An improved PRM implementation where the first sampled point is given by the CNN
+
+## Training Procedure
+1. Randomly select a base obstacle map with a single critical passageway
+   We manually generated multiple base obstacles maps with single critical passageways using CGAL's scene designer.
+   The JSON files describing the scenes were tranformed to images using ```stage_1.py```
+   The generated scenes contain various obstacle maps with passageways at positions (0,0), (1,0), ..., (8,0)
+   as in the following images
+   ![(0,0) - Example 1](samples/(0,0)\_1.png)
 
 ## Usage
 TBD
