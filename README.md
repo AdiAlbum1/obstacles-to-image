@@ -40,5 +40,8 @@ pip install -r requirments.txt
     * (6,0):
     <br>![(6,0) - Example 1](samples/(6,0)\_1.png)   ![(6,0) - Example 2](samples/(6,0)\_2.png)
 
+2. Randonly translate the obstacle map along the y-axis
+    * (0,0) - randomly translated along the y-axis:
+    <br>![(0,0) - Example 1 translated](samples/translate_1.png)   ![(0,0) - Example 2 translated](samples/translate_2.png)
 ## Usage
 TBD
