@@ -15,6 +15,18 @@ def max_abs_value(obstacle):
 
     return max_val
 
+def generate_base_obstacle_image(input_path):
+    obstacles = obstacle_drawer.read_obstacles_from_json(input_path)
+
+    # Initialize a black background image
+    img = np.zeros((params.im_height, params.im_width, 3), np.uint8)
+
+    for obstacle in obstacles:
+        # eliminate obstacles outside of range x in [-axis_range, axis_range] and y in [-axis_range, axis_range]
+        if max_abs_value(obstacle) <= axis_range:
+            img = obstacle_drawer.draw_obstacle(img, obstacle, params.im_height, params.im_width, params.axis_range)
+
+    return img
 
 if __name__ == "__main__":
     im_height = params.im_height
@@ -26,14 +38,6 @@ if __name__ == "__main__":
             in_filename = "input_json_obstacles\\"+str(i)+"_0\\"+str(j)+".json"
             out_filename = "input_png_obstacles\\"+str(i)+"_0\\"+str(j)+".png"
 
-            obstacles = obstacle_drawer.read_obstacles_from_json(in_filename)
-
-            # Initialize a black background image
-            img = np.zeros((im_height, im_width, 3), np.uint8)
-
-            for obstacle in obstacles:
-                # eliminate obstacles outside of range x in [-axis_range, axis_range] and y in [-axis_range, axis_range]
-                if max_abs_value(obstacle) <= axis_range:
-                    img = obstacle_drawer.draw_obstacle(img, obstacle, im_height, im_width, axis_range)
+            img = generate_base_obstacle_image(in_filename)
 
             cv.imwrite(out_filename, img)
