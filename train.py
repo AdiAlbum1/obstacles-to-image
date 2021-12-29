@@ -123,5 +123,6 @@ if __name__ == "__main__":
 
             mlflow.log_metrics({"train_loss" : train_loss, "test_loss" : test_loss})
         mlflow.log_artifacts("outputs")
+        torch.save(net, "test_model.pt")
 
         print('Finished Training')
