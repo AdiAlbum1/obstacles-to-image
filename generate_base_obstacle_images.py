@@ -24,7 +24,7 @@ if __name__ == "__main__":
     for i in range(9):
         for j in range(18):
             in_filename = "input_json_obstacles\\"+str(i)+"_0\\"+str(j)+".json"
-            out_filename = "input_png_obstacles\\stage 1\\"+str(i)+"_0\\"+str(j)+".png"
+            out_filename = "input_png_obstacles\\"+str(i)+"_0\\"+str(j)+".png"
 
             obstacles = obstacle_drawer.read_obstacles_from_json(in_filename)
 

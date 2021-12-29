@@ -22,7 +22,7 @@ def generate_batch(batch_size):
         random_base_index = random.randint(0, params.max_index_base_obstacle_maps)
 
         # read base obstacle
-        base_obstacle_path = "input_png_obstacles\\stage 1\\"+str(x_index)+"_0\\"+str(random_base_index)+".png"
+        base_obstacle_path = "input_png_obstacles\\"+str(x_index)+"_0\\"+str(random_base_index)+".png"
         base_obstacle = cv.imread(base_obstacle_path, cv.IMREAD_GRAYSCALE)
 
         # randomly translate the base obstacle along the y-axis
