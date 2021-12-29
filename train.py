@@ -48,7 +48,7 @@ def generate_batch(batch_size):
         # normalize row and col to [0,1] range
         normalized_pixel_row = pixels_row / params.im_height
         normalized_pixel_col = pixels_col / params.im_width
-        
+
         # normalize image to [0,1] range
         all_img = all_img / 255
 
