@@ -1,17 +1,8 @@
 import params
 
 def coordinates_to_pixels(x, y):
-    row = y
-    col = x
-
-    # translate
-    row += params.axis_range
-    col += params.axis_range
-
-    # scale
-
-    row = round(row * params.im_height / (2 * params.axis_range))
-    col = round(col * params.im_width / (2 * params.axis_range))
+    row = round(params.im_height * ((-y / (2 * params.axis_range)) + 0.5))
+    col = round(params.im_width * ((x / (2 * params.axis_range)) + 0.5))
 
     return (row, col)
 
