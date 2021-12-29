@@ -23,7 +23,7 @@ def generate_base_obstacle_image(input_path):
 
     for obstacle in obstacles:
         # eliminate obstacles outside of range x in [-axis_range, axis_range] and y in [-axis_range, axis_range]
-        if max_abs_value(obstacle) <= axis_range:
+        if max_abs_value(obstacle) <= params.axis_range:
             img = obstacle_drawer.draw_obstacle(img, obstacle, params.im_height, params.im_width, params.axis_range)
 
     return img
