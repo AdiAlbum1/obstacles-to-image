@@ -19,7 +19,7 @@ def generate_base_obstacle_image(input_path):
     obstacles = obstacle_drawer.read_obstacles_from_json(input_path)
 
     # Initialize a black background image
-    img = np.zeros((params.im_height, params.im_width, 3), np.uint8)
+    img = np.zeros((params.im_height, params.im_width, 1), np.uint8)
 
     for obstacle in obstacles:
         # eliminate obstacles outside of range x in [-axis_range, axis_range] and y in [-axis_range, axis_range]
@@ -33,11 +33,10 @@ if __name__ == "__main__":
     im_width = params.im_width
     axis_range = params.axis_range
 
-    for i in range(9):
-        for j in range(18):
+    for i in range(params.max_num_base_obstacle_maps + 1):
+        for j in range(params.max_index_base_obstacle_maps + 1):
             in_filename = "input_json_obstacles\\"+str(i)+"_0\\"+str(j)+".json"
             out_filename = "input_png_obstacles\\"+str(i)+"_0\\"+str(j)+".png"
 
             img = generate_base_obstacle_image(in_filename)
-
             cv.imwrite(out_filename, img)

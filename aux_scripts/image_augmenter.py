@@ -64,7 +64,7 @@ def randomly_generate_obstacles_avoiding_passageway(forbidden_row, forbidden_col
         curr_img = cv.warpAffine(curr_img, M, (curr_img.shape[1], curr_img.shape[0]))
 
         # if (obstacle_row, obstacle_col) is too near (forbidden_row, forbidden_col) ignore it
-        if forbidden_row - 25 < obstacle_row < forbidden_row + 25 and forbidden_col - 25 < obstacle_col < forbidden_col + 25:
+        if forbidden_row - 15 < obstacle_row < forbidden_row + 15 and forbidden_col - 15 < obstacle_col < forbidden_col + 15:
             continue
 
         all_img = cv.bitwise_or(all_img, curr_img)

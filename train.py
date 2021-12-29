@@ -4,12 +4,12 @@ import numpy as np
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-
 import torch.optim as optim
 
 import params
 from aux_scripts import translate, image_augmenter
+
+from net import Net
 
 import mlflow
 
@@ -62,44 +62,26 @@ def generate_batch(batch_size):
 
     return images_batch, labels_batch
 
-class Net(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.conv1 = nn.Conv2d(1, 32, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(32, 16, 5)
-        self.conv3 = nn.Conv2d(16, 8, 5)
-        self.conv4 = nn.Conv2d(8, 4, 5)
-        self.fc1 = nn.Linear(4 * 4 * 4, 120)
-        self.fc2 = nn.Linear(120, 60)
-        self.fc3 = nn.Linear(60, 2)
-
-    def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = self.pool(F.relu(self.conv3(x)))
-        x = self.pool(F.relu(self.conv4(x)))
-        x = torch.flatten(x, 1) # flatten all dimensions except batch
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x
-
 if __name__ == "__main__":
     net = Net()
+    net.initialize_weights()
 
     criterion = nn.MSELoss()
-    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    optimizer = optim.SGD(net.parameters(), lr=1e-3, momentum=0.9)
+    scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
 
     test_images, test_labels = generate_batch(params.test_set_size)
     test_images, test_labels = torch.from_numpy(test_images), torch.from_numpy(test_labels)
 
+    # train_images, train_labels = generate_batch(16)
+    # train_images, train_labels = torch.from_numpy(train_images), torch.from_numpy(train_labels)
+
     with mlflow.start_run():
-        for epoch in range(params.num_epochs):
+        for epoch in range(1, params.num_epochs+1):
 
             running_loss = 0.0
             train_loss = 0
-            for i in range(params.num_batches_in_epoch):
+            for i in range(1, params.num_batches_in_epoch+1):
                 # generate batch
                 images_batch, labels_batch = generate_batch(params.batch_size)
                 images_batch, labels_batch = torch.from_numpy(images_batch), torch.from_numpy(labels_batch)
@@ -114,15 +96,16 @@ if __name__ == "__main__":
                 loss.backward()
                 optimizer.step()
 
-
-            train_loss = train_loss / params.num_batches_in_epoch
-            # calculate test loss per epoch
-            test_outputs = net(test_images.float())
-            test_loss = criterion(test_outputs, test_labels.float()).item()
-            print("TEST LOSS: " + str(test_loss))
-
-            mlflow.log_metrics({"train_loss" : train_loss, "test_loss" : test_loss})
+                if i % 25 == 0:
+                    curr_train_loss = train_loss / i
+                    # calculate test loss per epoch
+                    test_outputs = net(test_images.float())
+                    test_loss = criterion(test_outputs, test_labels.float()).item()
+                    print(str(epoch) + ": " + str(i//25) +  "/" + str(params.num_batches_in_epoch//25)+":\tTrain loss: " + str(curr_train_loss) + ", Test loss: " + str(test_loss))
+                    mlflow.log_metrics({"train_loss": curr_train_loss, "test_loss": test_loss})
+            scheduler.step()
+            print(str(epoch) + ":" +"\tTrain loss: " + str(curr_train_loss) + ", Test loss: " + str(test_loss))
         mlflow.log_artifacts("outputs")
-        torch.save(net, "test_model.pt")
+        torch.save(net.state_dict(), "test_model.pt")
 
         print('Finished Training')
