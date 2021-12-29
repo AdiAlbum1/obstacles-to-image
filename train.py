@@ -45,12 +45,12 @@ def generate_batch(batch_size):
         # merge base obstacle with randomly generated obstacles
         all_img = cv.bitwise_or(base_obstacle, additional_obstacles)
 
-        # normalize image to [0,1] range
-        all_img = all_img / 255
-
         # normalize row and col to [0,1] range
         normalized_pixel_row = pixels_row / params.im_height
         normalized_pixel_col = pixels_col / params.im_width
+        
+        # normalize image to [0,1] range
+        all_img = all_img / 255
 
         images_batch.append(all_img)
         labels_batch.append((normalized_pixel_row, normalized_pixel_col))
