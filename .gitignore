@@ -17,3 +17,6 @@ input_png_obstacles/*
 # MLFlow
 mlruns/*
 !mlruns/.gitkeep
+
+# Model
+test_model.pt
