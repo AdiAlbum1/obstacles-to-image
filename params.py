@@ -7,10 +7,10 @@ max_num_base_obstacle_maps = 8
 max_index_base_obstacle_maps = 20
 max_num_additional_obstacles = 12
 
-max_obstacles = 10
+max_obstacles = 20
 
 # Training parameters
 batch_size = 16
-num_epochs = 200
-num_batches_in_epoch = 250
-test_set_size = 100
+num_epochs = 4
+num_batches_in_epoch = 2000
+test_set_size = 125

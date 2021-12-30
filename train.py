@@ -78,8 +78,6 @@ if __name__ == "__main__":
 
     with mlflow.start_run():
         for epoch in range(1, params.num_epochs+1):
-
-            running_loss = 0.0
             train_loss = 0
             for i in range(1, params.num_batches_in_epoch+1):
                 # generate batch
@@ -96,12 +94,12 @@ if __name__ == "__main__":
                 loss.backward()
                 optimizer.step()
 
-                if i % 25 == 0:
+                if i % 100 == 0:
                     curr_train_loss = train_loss / i
                     # calculate test loss per epoch
                     test_outputs = net(test_images.float())
                     test_loss = criterion(test_outputs, test_labels.float()).item()
-                    print(str(epoch) + ": " + str(i//25) +  "/" + str(params.num_batches_in_epoch//25)+":\tTrain loss: " + str(curr_train_loss) + ", Test loss: " + str(test_loss))
+                    print(str(epoch) + ": " + str(i//100) +  "/" + str(params.num_batches_in_epoch//100)+":\tTrain loss: " + str(curr_train_loss) + ", Test loss: " + str(test_loss))
                     mlflow.log_metrics({"train_loss": curr_train_loss, "test_loss": test_loss})
             scheduler.step()
             print(str(epoch) + ":" +"\tTrain loss: " + str(curr_train_loss) + ", Test loss: " + str(test_loss))
