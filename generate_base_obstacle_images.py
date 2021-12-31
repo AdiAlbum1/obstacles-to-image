@@ -15,7 +15,7 @@ def max_abs_value(obstacle):
 
     return max_val
 
-def generate_base_obstacle_image(input_path):
+def generate_obstacle_image(input_path):
     obstacles = obstacle_drawer.read_obstacles_from_json(input_path)
 
     # Initialize a black background image
@@ -38,5 +38,5 @@ if __name__ == "__main__":
             in_filename = "input_json_obstacles\\"+str(i)+"_0\\"+str(j)+".json"
             out_filename = "input_png_obstacles\\"+str(i)+"_0\\"+str(j)+".png"
 
-            img = generate_base_obstacle_image(in_filename)
+            img = generate_obstacle_image(in_filename)
             cv.imwrite(out_filename, img)
