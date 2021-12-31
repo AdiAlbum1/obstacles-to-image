@@ -18,5 +18,5 @@ input_png_obstacles/*
 mlruns/*
 !mlruns/.gitkeep
 
-# Model
-test_model.pt
+# Models
+models/
