@@ -13,6 +13,15 @@ from net import Net
 
 import mlflow
 
+def load_base_images():
+    base_images = {}
+    for x_index in range(params.max_num_base_obstacle_maps+1):
+        for i in range(params.max_index_base_obstacle_maps + 1):
+            base_obstacle_path = "input_png_obstacles\\" + str(x_index) + "_0\\" + str(i) + ".png"
+            base_images[(x_index, i)] = cv.imread(base_obstacle_path, cv.IMREAD_GRAYSCALE)
+
+    return base_images
+
 def generate_batch(batch_size):
     images_batch = []
     labels_batch = []
@@ -21,9 +30,11 @@ def generate_batch(batch_size):
         x_index = random.randint(0, params.max_num_base_obstacle_maps)
         random_base_index = random.randint(0, params.max_index_base_obstacle_maps)
 
-        # read base obstacle
-        base_obstacle_path = "input_png_obstacles\\"+str(x_index)+"_0\\"+str(random_base_index)+".png"
-        base_obstacle = cv.imread(base_obstacle_path, cv.IMREAD_GRAYSCALE)
+        # # read base obstacle
+        # base_obstacle_path = "input_png_obstacles\\"+str(x_index)+"_0\\"+str(random_base_index)+".png"
+        # base_obstacle = cv.imread(base_obstacle_path, cv.IMREAD_GRAYSCALE)
+
+        base_obstacle = base_images[(x_index, random_base_index)].copy()
 
         # randomly translate the base obstacle along the y-axis
         base_obstacle, pixels_row = image_augmenter.translate_along_y_axis(base_obstacle)
@@ -66,9 +77,14 @@ if __name__ == "__main__":
     net = Net()
     net.initialize_weights()
 
+    model_state_dict = torch.load("test_model.pt")
+    net.load_state_dict(model_state_dict)
+
     criterion = nn.MSELoss()
-    optimizer = optim.SGD(net.parameters(), lr=2*1e-3, momentum=0.9)
+    optimizer = optim.SGD(net.parameters(), lr=5*1e-3, momentum=0.9)
     scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
+
+    base_images = load_base_images()
 
     test_images, test_labels = generate_batch(params.test_set_size)
     test_images, test_labels = torch.from_numpy(test_images), torch.from_numpy(test_labels)
@@ -79,7 +95,7 @@ if __name__ == "__main__":
     with mlflow.start_run():
         for epoch in range(1, params.num_epochs+1):
             train_loss = 0
-            for i in range(1, (params.num_batches_in_epoch+1)//epoch):
+            for i in range(1, (params.num_batches_in_epoch+1)//(epoch**2)):
                 # generate batch
                 images_batch, labels_batch = generate_batch(params.batch_size)
                 images_batch, labels_batch = torch.from_numpy(images_batch), torch.from_numpy(labels_batch)
@@ -94,13 +110,14 @@ if __name__ == "__main__":
                 loss.backward()
                 optimizer.step()
 
-                if i % 100 == 0:
-                    curr_train_loss = train_loss / i
+                if i % 50 == 0:
+                    curr_train_loss = train_loss / 50
                     # calculate test loss per epoch
                     test_outputs = net(test_images.float())
                     test_loss = criterion(test_outputs, test_labels.float()).item()
-                    print(str(epoch) + ": " + str(i//100) +  "/" + str(params.num_batches_in_epoch//100)+":\tTrain loss: " + str(curr_train_loss) + ", Test loss: " + str(test_loss))
+                    print(str(epoch) + ": " + str(i//50) +  "/" + str(params.num_batches_in_epoch//50)+":\tTrain loss: " + str(curr_train_loss) + ", Test loss: " + str(test_loss))
                     mlflow.log_metrics({"train_loss": curr_train_loss, "test_loss": test_loss})
+                    train_loss = 0
             scheduler.step()
             print(str(epoch) + ":" +"\tTrain loss: " + str(curr_train_loss) + ", Test loss: " + str(test_loss))
         mlflow.log_artifacts("outputs")
