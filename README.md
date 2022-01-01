@@ -20,7 +20,7 @@ cd robotic-motion-planning-final-project
 pip install pipenv
 cd DiscoPygal
 pipenv install
-cv ../
+cd ../
 pip install -r requirments.txt
 ```
 
