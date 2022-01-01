@@ -67,7 +67,7 @@ if __name__ == "__main__":
     net.initialize_weights()
 
     criterion = nn.MSELoss()
-    optimizer = optim.SGD(net.parameters(), lr=1e-3, momentum=0.9)
+    optimizer = optim.SGD(net.parameters(), lr=2*1e-3, momentum=0.9)
     scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
 
     test_images, test_labels = generate_batch(params.test_set_size)
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     with mlflow.start_run():
         for epoch in range(1, params.num_epochs+1):
             train_loss = 0
-            for i in range(1, params.num_batches_in_epoch+1):
+            for i in range(1, (params.num_batches_in_epoch+1)//epoch):
                 # generate batch
                 images_batch, labels_batch = generate_batch(params.batch_size)
                 images_batch, labels_batch = torch.from_numpy(images_batch), torch.from_numpy(labels_batch)

@@ -17,6 +17,10 @@ To keep the project contained we’ll focus on a single disc robot translating i
 ```sh
 git clone https://github.com/AdiAlbum1/robotic-motion-planning-final-project
 cd robotic-motion-planning-final-project
+pip install pipenv
+cd DiscoPygal
+pipenv install
+cv ../
 pip install -r requirments.txt
 ```
 

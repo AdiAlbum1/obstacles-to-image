@@ -1,0 +1,7 @@
+__init__.py
+bindings.py
+setup.py
+CGALPY.egg-info/PKG-INFO
+CGALPY.egg-info/SOURCES.txt
+CGALPY.egg-info/dependency_links.txt
+CGALPY.egg-info/top_level.txt

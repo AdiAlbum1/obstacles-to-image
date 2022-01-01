@@ -12,7 +12,7 @@ max_obstacles = 20
 # Training parameters
 batch_size = 16
 num_epochs = 2
-num_batches_in_epoch = 3000
+num_batches_in_epoch = 4000
 test_set_size = 125
 
 # Inference parameters
