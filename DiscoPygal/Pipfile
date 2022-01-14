@@ -10,6 +10,8 @@ scikit-learn = "*"
 rmp = {editable = true, path = "."}
 cgalpy = {path = "./bindings"}
 requests = "*"
+sync = "*"
+pipfile = "*"
 
 [dev-packages]
 

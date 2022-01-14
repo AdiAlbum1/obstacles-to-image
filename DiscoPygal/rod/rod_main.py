@@ -6,8 +6,8 @@ from PyQt5 import QtCore
 
 from PyQt5.QtWidgets import QFileDialog
 
-from gui.Worker import Worker
-from gui.logger import Writer
+from DiscoPygal.gui.Worker import Worker
+from DiscoPygal.gui.logger import Writer
 from gui_rod import GUI_rod, QtWidgets
 import read_input
 from Polygons_scene import Polygons_scene

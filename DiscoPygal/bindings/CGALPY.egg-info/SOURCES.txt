@@ -1,5 +1,8 @@
+CGALPY.pyd
 __init__.py
 bindings.py
+libgmp-10.dll
+libmpfr-4.dll
 setup.py
 CGALPY.egg-info/PKG-INFO
 CGALPY.egg-info/SOURCES.txt
