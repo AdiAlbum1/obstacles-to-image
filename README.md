@@ -18,10 +18,8 @@ To keep the project contained we’ll focus on a single disc robot translating i
 git clone https://github.com/AdiAlbum1/robotic-motion-planning-final-project
 cd robotic-motion-planning-final-project
 pip install pipenv
-cd DiscoPygal
 pipenv install
-cd ../
-pip install -r requirments.txt
+pipenv shell
 ```
 
 ## Project Description
