@@ -13,14 +13,16 @@ from net import Net
 
 import mlflow
 
+
 def load_base_images():
     base_images = {}
-    for x_index in range(params.max_num_base_obstacle_maps+1):
+    for x_index in range(params.max_num_base_obstacle_maps + 1):
         for i in range(params.max_index_base_obstacle_maps + 1):
             base_obstacle_path = "input_png_obstacles\\" + str(x_index) + "_0\\" + str(i) + ".png"
             base_images[(x_index, i)] = cv.imread(base_obstacle_path, cv.IMREAD_GRAYSCALE)
 
     return base_images
+
 
 def generate_batch(batch_size):
     images_batch = []
@@ -48,13 +50,17 @@ def generate_batch(batch_size):
         random.shuffle(degrees_lst)
         rotation_angle = degrees_lst[0]
         base_obstacle = image_augmenter.rotate_image(base_obstacle, rotation_angle)
-        pixels_row, pixels_col = translate.translate_pixel_value_for_rotation(pixels_row, pixels_col, params.im_height, params.im_width, rotation_angle)
+        pixels_row, pixels_col = translate.translate_pixel_value_for_rotation(pixels_row, pixels_col, params.im_height,
+                                                                              params.im_width, rotation_angle)
 
         # randomly generate additional obstacles
         additional_obstacles = image_augmenter.randomly_generate_obstacles_avoiding_passageway(pixels_row, pixels_col)
 
         # merge base obstacle with randomly generated obstacles
         all_img = cv.bitwise_or(base_obstacle, additional_obstacles)
+
+        cv.imshow("obstacles", all_img)
+        cv.waitKey(0)
 
         # normalize row and col to [0,1] range
         normalized_pixel_row = pixels_row / params.im_height
@@ -73,16 +79,17 @@ def generate_batch(batch_size):
 
     return images_batch, labels_batch
 
+
 if __name__ == "__main__":
     net = Net()
     net.initialize_weights()
 
-    model_state_dict = torch.load("test_model.pt")
-    net.load_state_dict(model_state_dict)
+    # model_state_dict = torch.load("test_model.pt")
+    # net.load_state_dict(model_state_dict)
 
     criterion = nn.MSELoss()
-    optimizer = optim.SGD(net.parameters(), lr=5*1e-3, momentum=0.9)
-    scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
+    optimizer = optim.Adam(net.parameters())
+    # scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
 
     base_images = load_base_images()
 
@@ -92,34 +99,47 @@ if __name__ == "__main__":
     # train_images, train_labels = generate_batch(16)
     # train_images, train_labels = torch.from_numpy(train_images), torch.from_numpy(train_labels)
 
+    best_test_loss = 0.0015
+
     with mlflow.start_run():
-        for epoch in range(1, params.num_epochs+1):
-            train_loss = 0
-            for i in range(1, (params.num_batches_in_epoch+1)//(epoch**2)):
-                # generate batch
-                images_batch, labels_batch = generate_batch(params.batch_size)
-                images_batch, labels_batch = torch.from_numpy(images_batch), torch.from_numpy(labels_batch)
+        train_loss = 0
+        for i in range(1, (params.num_batches_in_epoch + 1)):
+            # generate batch
+            images_batch, labels_batch = generate_batch(params.batch_size)
+            images_batch, labels_batch = torch.from_numpy(images_batch), torch.from_numpy(labels_batch)
 
-                # zero the parameter gradients
-                optimizer.zero_grad()
+            # zero the parameter gradients
+            optimizer.zero_grad()
 
-                # forward + backward + optimize
-                outputs = net(images_batch.float())
-                loss = criterion(outputs, labels_batch.float())
-                train_loss += loss.item()
-                loss.backward()
-                optimizer.step()
+            # forward + backward + optimize
+            outputs = net(images_batch.float())
+            loss = criterion(outputs, labels_batch.float())
+            train_loss += loss.item()
+            loss.backward()
+            optimizer.step()
 
-                if i % 50 == 0:
-                    curr_train_loss = train_loss / 50
-                    # calculate test loss per epoch
-                    test_outputs = net(test_images.float())
-                    test_loss = criterion(test_outputs, test_labels.float()).item()
-                    print(str(epoch) + ": " + str(i//50) +  "/" + str(params.num_batches_in_epoch//50)+":\tTrain loss: " + str(curr_train_loss) + ", Test loss: " + str(test_loss))
-                    mlflow.log_metrics({"train_loss": curr_train_loss, "test_loss": test_loss})
-                    train_loss = 0
-            scheduler.step()
-            print(str(epoch) + ":" +"\tTrain loss: " + str(curr_train_loss) + ", Test loss: " + str(test_loss))
+            # print results
+            if i % 100 == 0:
+                # current train loss
+                curr_train_loss = train_loss / 100
+
+                # current test loss
+                test_outputs = net(test_images.float())
+                test_loss = criterion(test_outputs, test_labels.float()).item()
+
+                # log results
+                print(str(i // 100) + "/" + str(params.num_batches_in_epoch // 100) + ":\tTrain loss: " + str(
+                    curr_train_loss) + ", Test loss: " + str(test_loss))
+                mlflow.log_metrics({"train_loss": curr_train_loss, "test_loss": test_loss})
+
+                # if best test loss improved, save it. Not too often
+                if test_loss < best_test_loss:
+                    best_test_loss = test_loss
+                    torch.save(net.state_dict(), "test_model.pt")
+                    print(str(i // 100) + " BEST MODEL - TRAIN LOSS " + str(curr_train_loss) + "\tTEST LOSS " + str(best_test_loss))
+
+                train_loss = 0
+
         mlflow.log_artifacts("outputs")
         torch.save(net.state_dict(), "test_model.pt")
 
