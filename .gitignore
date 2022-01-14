@@ -8,7 +8,7 @@ __pycache__/
 venv/
 
 # MLFlow
-mlruns/
+mlruns
 
 # Models
 models/
