@@ -59,8 +59,8 @@ def generate_batch(batch_size):
         # merge base obstacle with randomly generated obstacles
         all_img = cv.bitwise_or(base_obstacle, additional_obstacles)
 
-        cv.imshow("obstacles", all_img)
-        cv.waitKey(0)
+        # cv.imshow("obstacles", all_img)
+        # cv.waitKey(0)
 
         # normalize row and col to [0,1] range
         normalized_pixel_row = pixels_row / params.im_height
