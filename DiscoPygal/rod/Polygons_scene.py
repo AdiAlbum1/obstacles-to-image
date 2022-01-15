@@ -1,7 +1,7 @@
 from bindings import *
 
-from gui.gui import QtCore
-from geometry_utils.collision_detection import Collision_detector
+from DiscoPygal.gui.gui import QtCore
+from DiscoPygal.geometry_utils.collision_detection import Collision_detector
 import read_input
 from conversions import point_2_to_xy, tuples_list_to_polygon_2, polygon_2_to_tuples_list, path_point_to_xyzd
 

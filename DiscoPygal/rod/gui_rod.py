@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtWidgets, QtGui
-from gui.gui import GUI
-from gui.logger import Logger
+from DiscoPygal.gui.gui import GUI
+from DiscoPygal.gui.logger import Logger
 
 
 class GUI_rod(GUI):
