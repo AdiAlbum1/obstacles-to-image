@@ -7,7 +7,7 @@ import sklearn.neighbors
 import numpy as np
 import time
 
-from geometry_utils.collision_detection import Collision_detector
+from DiscoPygal.geometry_utils.collision_detection import Collision_detector
 
 def calc_bbox(obstacles, origin, destination, length):
     X = []
