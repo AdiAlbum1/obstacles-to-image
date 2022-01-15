@@ -35,7 +35,7 @@ def point_d_to_arr(p: Point_d):
     return [p[i].to_double() for i in range(p.dimension())]
 
 
-def generate_path(length, obstacles, origin, destination, argument, writer, isRunning):
+def generate_path(scene, length, obstacles, origin, destination, argument, writer, isRunning):
     t0 = time.perf_counter()
     path = []
     try:

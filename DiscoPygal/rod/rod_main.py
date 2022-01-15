@@ -73,11 +73,12 @@ def generate_path():
     gui.empty_queue()
     path_name = gui.get_field('planner')
     argument = gui.get_field('argument')
+    scene = gui.get_field('scene')
     try:
         spec = util.spec_from_file_location(path_name, path_name)
         gp = util.module_from_spec(spec)
         spec.loader.exec_module(gp)
-        worker = Worker(gp.generate_path, ps.length, ps.obstacles, ps.origin,
+        worker = Worker(gp.generate_path, scene, ps.length, ps.obstacles, ps.origin,
                         ps.destination, argument, writer)
         worker.signals.finished.connect(done)
         print('Started generating path via:', path_name, file=writer)
