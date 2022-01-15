@@ -64,7 +64,7 @@ def generate_path(scene, length, obstacles, origin, destination, argument, write
     cd = Collision_detector(polygons, [], epsilon)
 
     # The number of nearest neighbors each vertex will try to connect to
-    K = min(20, num_landmarks)
+    K = 25
 
     i = 0
     while i < num_landmarks:
