@@ -7,6 +7,7 @@ import sklearn.neighbors
 import numpy as np
 import time
 
+import inference
 from DiscoPygal.geometry_utils.collision_detection import Collision_detector
 
 def calc_bbox(obstacles, origin, destination, length):
@@ -64,14 +65,31 @@ def generate_path(scene, length, obstacles, origin, destination, argument, write
     cd = Collision_detector(polygons, [], epsilon)
 
     # The number of nearest neighbors each vertex will try to connect to
-    K = 25
+    K = min(20, num_landmarks)
+
+    # Number of points to sample near narrow passageway
+    n_NP = min(200, int(0.25 * num_landmarks) + 1)
+
+    # narrow_passageway_pos = inference.find_narrow_passageway(scene)
+    narrow_passageway_pos = (0, 0)
+    print("Narrow passageway: " + str(narrow_passageway_pos), file=writer)
 
     i = 0
     while i < num_landmarks:
         # sample new landmark
-        rand_x = FT(random.uniform(x_range[0], x_range[1]))
-        rand_y = FT(random.uniform(y_range[0], y_range[1]))
-        rand_z = FT(random.uniform(z_range[0], z_range[1]))
+        if i < n_NP:
+            rand_x = FT(random.gauss(mu=narrow_passageway_pos[0], sigma=2.5))
+            rand_y = FT(random.gauss(mu=narrow_passageway_pos[1], sigma=2.5))
+            rand_z = FT(random.uniform(z_range[0], z_range[1]))
+
+            print("NARROW: " + str((rand_x.to_double(), rand_y.to_double(), rand_z.to_double())))
+
+        else:
+            rand_x = FT(random.uniform(x_range[0], x_range[1]))
+            rand_y = FT(random.uniform(y_range[0], y_range[1]))
+            rand_z = FT(random.uniform(z_range[0], z_range[1]))
+
+            print("REGULAR: " + str((rand_x.to_double(), rand_y.to_double(), rand_z.to_double())))
 
         if cd.is_rod_position_valid(rand_x, rand_y, rand_z, length):
             p = Point_d(3, [rand_x, rand_y, rand_z])
