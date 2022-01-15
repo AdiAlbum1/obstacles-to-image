@@ -4,7 +4,7 @@ import webbrowser
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
 from gui_scene_designer import GUI_scene_designer
-from gui import RPolygon, RSegment, RDisc
+from DiscoPygal.gui import RPolygon, RSegment, RDisc
 import sys
 import json
 import math

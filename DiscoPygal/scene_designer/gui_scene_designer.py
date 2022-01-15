@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
-from gui.gui import GUI, MainWindowPlus
+from DiscoPygal.gui.gui import GUI, MainWindowPlus
 
 
 class MainWindowSceneDesigner(MainWindowPlus):

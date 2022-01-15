@@ -1,13 +1,13 @@
 from bindings import *
 import random
 import math
-import conversions
+from DiscoPygal.rod import conversions
 import networkx as nx
 import sklearn.neighbors
 import numpy as np
 import time
 
-from rod.solvers.collision_detection import Collision_detector
+from DiscoPygal.rod.solvers.collision_detection import Collision_detector
 
 # The number of nearest neighbors each vertex will try to connect to
 K = 15
