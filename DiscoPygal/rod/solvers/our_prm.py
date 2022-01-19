@@ -70,8 +70,8 @@ def generate_path(scene, length, obstacles, origin, destination, argument, write
     # Number of points to sample near narrow passageway
     n_NP = min(200, int(0.25 * num_landmarks) + 1)
 
-    # narrow_passageway_pos = inference.find_narrow_passageway(scene)
-    narrow_passageway_pos = (0, 0)
+    narrow_passageway_pos = inference.find_narrow_passageway(scene)
+    # narrow_passageway_pos = (0, 0)
     print("Narrow passageway: " + str(narrow_passageway_pos), file=writer)
 
     i = 0
