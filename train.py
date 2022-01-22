@@ -89,17 +89,20 @@ if __name__ == "__main__":
 
     criterion = nn.MSELoss()
     optimizer = optim.Adam(net.parameters())
-    # scheduler = optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.9)
 
     base_images = load_base_images()
 
-    test_images, test_labels = generate_batch(params.test_set_size)
+    # generate test set
+    test_images, test_labels = generate_batch(params.batch_size)
+    test_images, test_labels = np.array([test_images]), np.array([test_labels])
+    for i in range(params.num_test_set_batches - 1):
+        curr_test_images, curr_test_labels = generate_batch(params.batch_size)
+        test_images = np.vstack((test_images, np.array([curr_test_images])))
+        test_labels = np.vstack((test_labels, np.array([curr_test_labels])))
+
     test_images, test_labels = torch.from_numpy(test_images), torch.from_numpy(test_labels)
 
-    # train_images, train_labels = generate_batch(16)
-    # train_images, train_labels = torch.from_numpy(train_images), torch.from_numpy(train_labels)
-
-    best_test_loss = 0.0015
+    best_test_loss = 0.001
 
     with mlflow.start_run():
         train_loss = 0
@@ -119,16 +122,20 @@ if __name__ == "__main__":
             optimizer.step()
 
             # print results
-            if i % 100 == 0:
+            if i % 140 == 0:
                 # current train loss
-                curr_train_loss = train_loss / 100
+                curr_train_loss = train_loss / 140
 
                 # current test loss
-                test_outputs = net(test_images.float())
-                test_loss = criterion(test_outputs, test_labels.float()).item()
+                test_loss = 0
+                for j in range(params.num_test_set_batches):
+                    test_outputs = net(test_images[j].float())
+                    curr_test_loss = criterion(test_outputs, test_labels[j].float()).item()
+                    test_loss += curr_test_loss
+                test_loss = test_loss / params.num_test_set_batches
 
                 # log results
-                print(str(i // 100) + "/" + str(params.num_batches_in_epoch // 100) + ":\tTrain loss: " + str(
+                print(str(i // 140) + "/" + str(params.num_batches_in_epoch // 140) + ":\tTrain loss: " + str(
                     curr_train_loss) + ", Test loss: " + str(test_loss))
                 mlflow.log_metrics({"train_loss": curr_train_loss, "test_loss": test_loss})
 
@@ -136,7 +143,7 @@ if __name__ == "__main__":
                 if test_loss < best_test_loss:
                     best_test_loss = test_loss
                     torch.save(net.state_dict(), "test_model.pt")
-                    print(str(i // 100) + " BEST MODEL - TRAIN LOSS " + str(curr_train_loss) + "\tTEST LOSS " + str(best_test_loss))
+                    print(str(i // 140) + " BEST MODEL - TRAIN LOSS " + str(curr_train_loss) + "\tTEST LOSS " + str(best_test_loss))
 
                 train_loss = 0
 
