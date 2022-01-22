@@ -13,9 +13,11 @@ import math
 import conversions
 import sum_distances
 import bounding_box
+import inference
 
 # Number of nearest neighbors to search for in the k-d tree
-K = 15
+# K = 15
+K = 30
 
 # generate_path() is our main PRM function
 # it constructs a PRM (probabilistic roadmap)
@@ -58,6 +60,9 @@ def generate_path_disc(scene, robots, obstacles, disc_obstacles, destinations, a
     G.add_nodes_from([sources, destinations])
     print('Sampling landmarks', file=writer)
 
+    scene_img, narrow_passageway_pos = inference.find_narrow_passageway(scene)
+    n_NP = num_landmarks // 2
+    print("Narrow passageway: " + str(narrow_passageway_pos), file=writer)
 
     ######################
     # Sampling landmarks
@@ -67,7 +72,11 @@ def generate_path_disc(scene, robots, obstacles, disc_obstacles, destinations, a
             print("Aborted", file=writer)
             return path, G
 
-        p = sample_valid_landmark(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii)
+        if i < n_NP:
+            p = sample_valid_landmark_near_narrow_passageway(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii,
+                                                             narrow_passageway_pos)
+        else:
+            p = sample_valid_landmark(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii)
         G.add_node(p)
         points.append(p)
         if i % 500 == 0:
@@ -158,6 +167,32 @@ def sample_valid_landmark(min_x, max_x, min_y, max_y, collision_detectors, num_r
             else:
                 break
         # verify that the robots do not collide with one another at the sampled configuration
+        if len(points) == num_robots and not collision_detection.check_intersection_static(points, radii):
+            return conversions.to_point_d(points)
+
+def sample_valid_landmark_near_narrow_passageway(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii,
+                                                 narrow_passageway_pos):
+
+    np_std = 1
+    while True:
+        points = []
+
+        # randomly select a robot which we'll select near the narrow passageway
+        j = random.randint(0, num_robots-1)
+        for i in range(num_robots):
+            if i == j:
+                rand_x = FT(random.gauss(mu=narrow_passageway_pos[0], sigma=np_std))
+                rand_y = FT(random.gauss(mu=narrow_passageway_pos[1], sigma=np_std))
+            else:
+                rand_x = FT(random.uniform(min_x, max_x))
+                rand_y = FT(random.uniform(min_y, max_y))
+
+            p = Point_2(rand_x, rand_y)
+            if collision_detectors[i].is_point_valid(p):
+                points.append(p)
+            else:
+                break
+            # verify that the robots do not collide with one another at the sampled configuration
         if len(points) == num_robots and not collision_detection.check_intersection_static(points, radii):
             return conversions.to_point_d(points)
 

@@ -4,8 +4,8 @@ import math
 import networkx as nx
 
 from bindings import *
-from geometry_utils import collision_detection
-from geometry_utils import display_arrangement
+from DiscoPygal.geometry_utils import collision_detection
+from DiscoPygal.geometry_utils import display_arrangement
 
 # Epsilon for approximated offset
 EPS = 0.0001
@@ -122,7 +122,7 @@ def generate_path_from_connectivity_graph(conn_graph, start, end, collision_dete
 
 
 
-def generate_path_disc(robots, obstacles, disc_obstacles, destinations, argument, writer, isRunning):
+def generate_path_disc(scene, robots, obstacles, disc_obstacles, destinations, argument, writer, isRunning):
     """
     Exact motion planner for a single disc robot among polygonal obstacles
     The idea is to use a vertical decomposition of the (expanded) obstacles arrangement,

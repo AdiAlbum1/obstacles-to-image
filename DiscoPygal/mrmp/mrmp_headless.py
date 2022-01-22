@@ -41,10 +41,10 @@ if __name__ == '__main__':
         gp = util.module_from_spec(spec)
         spec.loader.exec_module(gp)
         if mode == "disc":
-            ps.path, _ = gp.generate_path_disc(ps.robots, ps.obstacles, ps.disc_obstacles, ps.destinations,
+            ps.path, _ = gp.generate_path_disc(scene, ps.robots, ps.obstacles, ps.disc_obstacles, ps.destinations,
                                         argument, sys.stdout, [ True ])
         else:
-            ps.path, _ = gp.generate_path_polygon(ps.robots, ps.obstacles, ps.destinations,
+            ps.path, _ = gp.generate_path_polygon(scene, ps.robots, ps.obstacles, ps.destinations,
                                         argument, sys.stdout, [ True ])
     ps.is_path_valid()
     if output:

@@ -111,17 +111,18 @@ def generate_path():
     gui.empty_queue()
     path_name = gui.get_field('planner')
     argument = gui.get_field('argument')
+    scene = gui.get_field('scene')
     try:
         spec = util.spec_from_file_location(path_name, path_name)
         gp = util.module_from_spec(spec)
         spec.loader.exec_module(gp)
         if mode == 'disc':
-            worker = Worker(gp.generate_path_disc, ps.robots, ps.obstacles, ps.disc_obstacles,
+            worker = Worker(gp.generate_path_disc, scene, ps.robots, ps.obstacles, ps.disc_obstacles,
                             ps.destinations,
                             argument,
                             writer)
         if mode == 'polygon':
-            worker = Worker(gp.generate_path_polygon, ps.robots, ps.obstacles, ps.destinations,
+            worker = Worker(gp.generate_path_polygon, scene, ps.robots, ps.obstacles, ps.destinations,
                             argument,
                             writer)
         worker.signals.finished.connect(done)
