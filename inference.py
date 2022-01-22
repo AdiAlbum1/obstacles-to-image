@@ -3,8 +3,9 @@ import torch
 
 import params
 from generate_base_obstacle_images import generate_obstacle_image
-from net import Net
 from aux_scripts import translate
+
+from models.current_best.net import Net
 
 def find_k_narrow_passageways(input_scene_img):
     # normalize image to [0,1] range
