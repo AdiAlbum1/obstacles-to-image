@@ -126,6 +126,7 @@ if __name__ == "__main__":
                 # current train loss
                 curr_train_loss = train_loss / 140
 
+                net.eval()
                 # current test loss
                 test_loss = 0
                 for j in range(params.num_test_set_batches):
@@ -133,6 +134,7 @@ if __name__ == "__main__":
                     curr_test_loss = criterion(test_outputs, test_labels[j].float()).item()
                     test_loss += curr_test_loss
                 test_loss = test_loss / params.num_test_set_batches
+                net.train()
 
                 # log results
                 print(str(i // 140) + "/" + str(params.num_batches_in_epoch // 140) + ":\tTrain loss: " + str(
