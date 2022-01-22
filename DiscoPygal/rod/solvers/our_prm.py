@@ -6,9 +6,11 @@ import networkx as nx
 import sklearn.neighbors
 import numpy as np
 import time
+import cv2 as cv
 
 import inference
 from DiscoPygal.geometry_utils.collision_detection import Collision_detector
+from aux_scripts import sample_points_drawer
 
 def calc_bbox(obstacles, origin, destination, length):
     X = []
@@ -64,34 +66,43 @@ def generate_path(scene, length, obstacles, origin, destination, argument, write
 
     cd = Collision_detector(polygons, [], epsilon)
 
-    # The number of nearest neighbors each vertex will try to connect to
-    K = min(20, num_landmarks)
-
     # Number of points to sample near narrow passageway
-    n_NP = min(200, int(0.25 * num_landmarks) + 1)
+    n_NP = num_landmarks // 15 + 1
+    np_std = min(n_NP/35.0, 1.5)
 
-    narrow_passageway_pos = inference.find_narrow_passageway(scene)
+    # The number of nearest neighbors each vertex will try to connect to
+    # K = min(20, num_landmarks)
+    K = min(n_NP + 3, 20)
+
+    scene_img, narrow_passageway_pos = inference.find_narrow_passageway(scene)
+    print(scene_img.shape)
     # narrow_passageway_pos = (0, 0)
     print("Narrow passageway: " + str(narrow_passageway_pos), file=writer)
+    print("Num samples near passageway: " + str(n_NP), file=writer)
+    print("Samples std = " + str(np_std), file=writer)
+    print("K = " + str(K), file=writer)
 
+    narrow_passageway_landmarks = []
+    remaining_landmarks = []
     i = 0
     while i < num_landmarks:
         # sample new landmark
         if i < n_NP:
-            rand_x = FT(random.gauss(mu=narrow_passageway_pos[0], sigma=2.5))
-            rand_y = FT(random.gauss(mu=narrow_passageway_pos[1], sigma=2.5))
-            rand_z = FT(random.uniform(z_range[0], z_range[1]))
-
-            print("NARROW: " + str((rand_x.to_double(), rand_y.to_double(), rand_z.to_double())))
+            rand_x = FT(random.gauss(mu=narrow_passageway_pos[0], sigma=np_std))
+            rand_y = FT(random.gauss(mu=narrow_passageway_pos[1], sigma=np_std))
+            rand_z = FT(random.uniform(z_range[0], z_range[1] / 2))
 
         else:
             rand_x = FT(random.uniform(x_range[0], x_range[1]))
             rand_y = FT(random.uniform(y_range[0], y_range[1]))
-            rand_z = FT(random.uniform(z_range[0], z_range[1]))
-
-            print("REGULAR: " + str((rand_x.to_double(), rand_y.to_double(), rand_z.to_double())))
+            rand_z = FT(random.uniform(z_range[0], z_range[1] / 2))
 
         if cd.is_rod_position_valid(rand_x, rand_y, rand_z, length):
+            if i < n_NP:
+                narrow_passageway_landmarks.append((rand_x.to_double(), rand_y.to_double()))
+                print("NARROW: " + str((rand_x.to_double(), rand_y.to_double(), rand_z.to_double())))
+            else:
+                remaining_landmarks.append((rand_x.to_double(), rand_y.to_double()))
             p = Point_d(3, [rand_x, rand_y, rand_z])
             G.add_node(p)
             points.append(p)
@@ -99,6 +110,13 @@ def generate_path(scene, length, obstacles, origin, destination, argument, write
             if i % 500 == 0:
                 print(i, "landmarks sampled", file=writer)
     print(num_landmarks, "landmarks sampled", file=writer)
+
+    scene_with_landmarks = cv.cvtColor(scene_img, cv.COLOR_GRAY2RGB)
+    scene_with_landmarks = sample_points_drawer.draw_sample_points(scene_with_landmarks, narrow_passageway_landmarks, True)
+    scene_with_landmarks = sample_points_drawer.draw_sample_points(scene_with_landmarks, remaining_landmarks, False)
+
+    cv.imwrite("evaluate\\scene\\scene.png", scene_img)
+    cv.imwrite("evaluate\\scene\\our_prm_samples.png", scene_with_landmarks)
 
     # distance used for nearest neighbor search
     def custom_dist(p, q):
