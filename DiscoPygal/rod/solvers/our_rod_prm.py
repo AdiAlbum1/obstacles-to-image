@@ -90,12 +90,12 @@ def generate_path(scene, length, obstacles, origin, destination, argument, write
         if i < n_NP:
             rand_x = FT(random.gauss(mu=narrow_passageway_pos[0], sigma=np_std))
             rand_y = FT(random.gauss(mu=narrow_passageway_pos[1], sigma=np_std))
-            rand_z = FT(random.uniform(z_range[0], z_range[1] / 2))
+            rand_z = FT(random.uniform(z_range[0], z_range[1]))
 
         else:
             rand_x = FT(random.uniform(x_range[0], x_range[1]))
             rand_y = FT(random.uniform(y_range[0], y_range[1]))
-            rand_z = FT(random.uniform(z_range[0], z_range[1] / 2))
+            rand_z = FT(random.uniform(z_range[0], z_range[1]))
 
         if cd.is_rod_position_valid(rand_x, rand_y, rand_z, length):
             if i < n_NP:

@@ -3,7 +3,7 @@ im_height = 64
 im_width = 64
 
 # Data parameters
-max_num_base_obstacle_maps = 8
+max_num_base_obstacle_maps = 9
 max_index_base_obstacle_maps = 39
 max_num_additional_obstacles = 19
 
