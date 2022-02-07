@@ -26,9 +26,8 @@ def translate_along_y_axis(image):
 
     return result, pixel_row
 
-def randomly_generate_obstacles_avoiding_passageway(forbidden_row, forbidden_col):
-    num_obstacles = round(random.expovariate(params.lambda_scale))
-
+def randomly_generate_obstacles_avoiding_passageway(forbidden_row, forbidden_col, box_start, box_end, interest_point):
+    num_obstacles = round(random.expovariate(params.lambda_scale) + random.randint(0,3))
     # create obstacle background - a black image
     all_img = np.zeros((params.im_height, params.im_width, 1), np.uint8)
 
@@ -41,32 +40,37 @@ def randomly_generate_obstacles_avoiding_passageway(forbidden_row, forbidden_col
 
         curr_img = np.zeros((params.im_height, params.im_width, 1), np.uint8)
 
-        for obstacle in obstacles:
-            curr_img = obstacle_drawer.draw_obstacle(curr_img, obstacle, params.im_height, params.im_width,
-                                                     params.axis_range)
+        obstacle = obstacles[0]
 
         # randomly rotate obstacle
         angle = random.uniform(0, 360)
-        curr_img = rotate_image(curr_img, angle)
+        mat = cv.getRotationMatrix2D((0,0), angle, 1)
+        rotated_obstacle = []
+        for vector in obstacle:
+            rotated_vector = np.matmul(mat, [vector[0], vector[1], 1])
+            rotated_obstacle.append(rotated_vector)
 
         # randomly translate shape
-        x_position = random.randint(int(-params.im_width / 2), int(params.im_width / 2))
-        y_position = random.randint(int(-params.im_height / 2), int(params.im_height / 2))
+        x_position = random.randint(-params.axis_range, params.axis_range)
+        y_position = random.randint(-params.axis_range, params.axis_range)
 
-        M = np.float32([
-            [1, 0, x_position],
-            [0, 1, y_position]
-        ])
+        translated_obstacle = []
+        for vector in rotated_obstacle:
+            translated_vector = (vector[0] + x_position, vector[1] + y_position)
+            translated_obstacle.append(translated_vector)
+
+        curr_img = obstacle_drawer.draw_obstacle(curr_img, translated_obstacle, params.im_height, params.im_width,
+                                                 params.axis_range)
 
         obstacle_row = int((params.im_height/2) + y_position)
         obstacle_col = int((params.im_width/2) + x_position)
-
-        curr_img = cv.warpAffine(curr_img, M, (curr_img.shape[1], curr_img.shape[0]))
 
         # if (obstacle_row, obstacle_col) is too near (forbidden_row, forbidden_col) ignore it
         if forbidden_row - 15 < obstacle_row < forbidden_row + 15 and forbidden_col - 15 < obstacle_col < forbidden_col + 15:
             continue
 
+        box_start, box_end = obstacle_drawer.update_box(translated_obstacle, box_start, box_end, interest_point)
+
         all_img = cv.bitwise_or(all_img, curr_img)
 
-    return all_img
+    return all_img, (box_start, box_end)

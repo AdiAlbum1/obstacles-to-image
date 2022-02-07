@@ -1,16 +1,28 @@
+import cv2 as cv
+
 import inference
 
+def evaluate(filename):
+    img, net_output = inference.find_narrow_passageway(filename)
+    pw_start_row, pw_start_col, pw_end_row, pw_end_col = net_output
+
+    pw_start = pw_start_row, pw_start_col
+    pw_end = pw_end_row, pw_end_col
+
+    pw_start = pw_start[::-1]
+    pw_end = pw_end[::-1]
+
+    # draw box
+    color = (255, 0, 0)
+    img = cv.rectangle(img, pw_start, pw_end, color)
+
+    cv.imshow("img", img)
+    cv.waitKey(0)
+
 if __name__ == "__main__":
-    # load obstacles
-    in_filename, in_filename_2 = "evaluate\\test_scene_(6,-4).json", "evaluate\\test_scene_(4,2).json"
-
-    # calculate ground truth values
-    ground_truth_coords, ground_truth_coords_2 = (6, -4), (4, 2)
-
-    _ , res_1 = inference.find_narrow_passageway(in_filename)
-    print("GT 1: " + str(ground_truth_coords))
-    print("Result 1: " + str(res_1))
-
-    _ , res_2 = inference.find_narrow_passageway(in_filename_2)
-    print("GT 2: " + str(ground_truth_coords_2))
-    print("Result 2: " + str(res_2))
+    evaluate("evaluate\\test_scene_(4,2).json")
+    evaluate("evaluate\\test_scene_(6,-4).json")
+    evaluate("evaluate\\test_scene_1.json")
+    evaluate("evaluate\\test_scene_2.json")
+    evaluate("evaluate\\test_scene_3.json")
+    evaluate("evaluate\\test_scene_4.json")

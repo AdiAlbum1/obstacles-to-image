@@ -1,9 +1,11 @@
 import sys
 import os.path
-sys.path.insert(0, os.path.dirname(__file__))
-
+import cv2 as cv
 import sklearn.neighbors
 import numpy as np
+
+sys.path.insert(0, os.path.dirname(__file__))
+
 from DiscoPygal.bindings import *
 from DiscoPygal.geometry_utils import collision_detection
 import networkx as nx
@@ -14,10 +16,12 @@ import conversions
 import sum_distances
 import bounding_box
 import inference
+from aux_scripts import translate
+
 
 # Number of nearest neighbors to search for in the k-d tree
 # K = 15
-K = 30
+K = 10
 
 # generate_path() is our main PRM function
 # it constructs a PRM (probabilistic roadmap)
@@ -60,9 +64,22 @@ def generate_path_disc(scene, robots, obstacles, disc_obstacles, destinations, a
     G.add_nodes_from([sources, destinations])
     print('Sampling landmarks', file=writer)
 
-    scene_img, narrow_passageway_pos = inference.find_narrow_passageway(scene)
+    scene_img, net_output = inference.find_narrow_passageway(scene)
+    pw_start_row, pw_start_col, pw_end_row, pw_end_col = net_output
+    pw_start = pw_start_row, pw_start_col
+    pw_end = pw_end_row, pw_end_col
+
+    # draw box
+    color = (255, 0, 0)
+    scene_img = cv.rectangle(scene_img, pw_start[::-1], pw_end[::-1], color)
+    cv.imshow("scene_img", scene_img)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+
+    pw_start_coords = translate.pixels_to_coordinates(pw_start[0], pw_start[1])
+    pw_end_coords = translate.pixels_to_coordinates(pw_end[0], pw_end[1])
+
     n_NP = num_landmarks // 2
-    print("Narrow passageway: " + str(narrow_passageway_pos), file=writer)
 
     ######################
     # Sampling landmarks
@@ -73,8 +90,8 @@ def generate_path_disc(scene, robots, obstacles, disc_obstacles, destinations, a
             return path, G
 
         if i < n_NP:
-            p = sample_valid_landmark_near_narrow_passageway(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii,
-                                                             narrow_passageway_pos)
+            p = sample_valid_landmark_in_narrow_passageway(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii,
+                                                             pw_start_coords, pw_end_coords)
         else:
             p = sample_valid_landmark(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii)
         G.add_node(p)
@@ -170,8 +187,8 @@ def sample_valid_landmark(min_x, max_x, min_y, max_y, collision_detectors, num_r
         if len(points) == num_robots and not collision_detection.check_intersection_static(points, radii):
             return conversions.to_point_d(points)
 
-def sample_valid_landmark_near_narrow_passageway(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii,
-                                                 narrow_passageway_pos):
+def sample_valid_landmark_in_narrow_passageway(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii,
+                                                 pw_start_coords, pw_end_coords):
 
     np_std = 1
     while True:
@@ -181,8 +198,8 @@ def sample_valid_landmark_near_narrow_passageway(min_x, max_x, min_y, max_y, col
         j = random.randint(0, num_robots-1)
         for i in range(num_robots):
             if i == j:
-                rand_x = FT(random.gauss(mu=narrow_passageway_pos[0], sigma=np_std))
-                rand_y = FT(random.gauss(mu=narrow_passageway_pos[1], sigma=np_std))
+                rand_x = FT(random.uniform(pw_start_coords[0], pw_end_coords[0]))
+                rand_y = FT(random.uniform(pw_start_coords[1], pw_end_coords[1]))
             else:
                 rand_x = FT(random.uniform(min_x, max_x))
                 rand_y = FT(random.uniform(min_y, max_y))

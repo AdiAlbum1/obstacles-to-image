@@ -5,17 +5,8 @@ import params
 from generate_base_obstacle_images import generate_obstacle_image
 from aux_scripts import translate
 
-from models.current_best.net import Net
-
-def find_k_narrow_passageways(input_scene_img):
-    # normalize image to [0,1] range
-    input_scene_img = input_scene_img / 255.0
-
-    # load model
-    model_state_dict = torch.load(params.network_path)
-    model = Net()
-    model.load_state_dict(model_state_dict)
-    model = model.eval()
+# from models.current_best.net import Net
+from net import Net
 
 
 def find_narrow_passageway(input_path):
@@ -38,8 +29,9 @@ def find_narrow_passageway(input_path):
     results = model(obstacle_image_batch.float())
 
     # decipher model results to obstacle coordinates
-    results_x, results_y = results.cpu().data.numpy()[0]
-    results_pix_row, results_pix_col = translate.net_output_to_pixels(results_x, results_y)
-    results_coord_x, results_coord_y = translate.pixels_to_coordinates(results_pix_row, results_pix_col)
+    pw_start_row, pw_start_col, pw_end_row, pw_end_col = results.cpu().data.numpy()[0]
 
-    return orig_obstacle_image, (results_coord_x, results_coord_y)
+    pw_start_row, pw_start_col = translate.net_output_to_pixels(pw_start_row, pw_start_col)
+    pw_end_row, pw_end_col = translate.net_output_to_pixels(pw_end_row, pw_end_col)
+
+    return orig_obstacle_image, (pw_start_row, pw_start_col, pw_end_row, pw_end_col)
