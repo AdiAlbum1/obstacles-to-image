@@ -70,6 +70,7 @@ joblib = "==1.0.1"
 scikit-learn = "==1.0"
 scipy = "==1.7.1"
 threadpoolctl = "==3.0.0"
+shapely = "*"
 
 [dev-packages]
 

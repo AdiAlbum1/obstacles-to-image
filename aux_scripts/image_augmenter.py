@@ -14,7 +14,7 @@ def rotate_image(image, angle):
     return result
 
 def translate_along_y_axis(image):
-    y_translation = random.randint(int(-params.im_height / 2), int(params.im_height / 2))
+    y_translation = random.randint(int((-params.im_height+5) / 2), int((params.im_height-5) / 2))
 
     M = np.float32([
         [1, 0, 0],
@@ -26,8 +26,8 @@ def translate_along_y_axis(image):
 
     return result, pixel_row
 
-def randomly_generate_obstacles_avoiding_passageway(forbidden_row, forbidden_col, box_start, box_end, interest_point):
-    num_obstacles = round(random.expovariate(params.lambda_scale) + random.randint(0,3))
+def randomly_generate_obstacles_avoiding_passageway(forbidden_row, forbidden_col, passageway):
+    num_obstacles = round(random.expovariate(params.lambda_scale))
     # create obstacle background - a black image
     all_img = np.zeros((params.im_height, params.im_width, 1), np.uint8)
 
@@ -65,12 +65,13 @@ def randomly_generate_obstacles_avoiding_passageway(forbidden_row, forbidden_col
         obstacle_row = int((params.im_height/2) + y_position)
         obstacle_col = int((params.im_width/2) + x_position)
 
-        # if (obstacle_row, obstacle_col) is too near (forbidden_row, forbidden_col) ignore it
-        if forbidden_row - 15 < obstacle_row < forbidden_row + 15 and forbidden_col - 15 < obstacle_col < forbidden_col + 15:
-            continue
+        updated_passageway = obstacle_drawer.update_passageway(translated_obstacle, passageway)
 
-        box_start, box_end = obstacle_drawer.update_box(translated_obstacle, box_start, box_end, interest_point)
+        if updated_passageway is None:
+            # invalid obstacle, continue
+            continue
+        passageway = updated_passageway
 
         all_img = cv.bitwise_or(all_img, curr_img)
 
-    return all_img, (box_start, box_end)
+    return all_img, passageway

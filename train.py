@@ -10,6 +10,7 @@ import params
 from aux_scripts import translate, image_augmenter, passageway_width_calculator
 
 from net import Net
+from passageway import Passageway
 
 import mlflow
 
@@ -48,6 +49,7 @@ def generate_batch(batch_size):
         coordinates = (x_index, 0)
         _, col_pixels = translate.coordinates_to_pixels(coordinates[0], coordinates[1])
         row_pixels = params.im_height / 2
+        point_of_interest = (row_pixels, col_pixels)
 
         # calculate obstacle passageway height and width
         base_passageway_width = base_passageway_widths[(x_index, random_base_index)]
@@ -60,6 +62,7 @@ def generate_batch(batch_size):
         # calculate passageway bounding box: start = upper left, end = bottom right
         passageway_start = (row_pixels - (base_passageway_height / 2), col_pixels - (base_passageway_width / 2))
         passageway_end = (row_pixels + (base_passageway_height / 2), col_pixels + (base_passageway_width / 2))
+        passageway = Passageway(passageway_start, passageway_end, point_of_interest)
 
         # randomly translate the base obstacle along the y-axis
         base_obstacle, row_pixels = image_augmenter.translate_along_y_axis(base_obstacle)
@@ -82,15 +85,21 @@ def generate_batch(batch_size):
         # start and end change after rotation, fix this:
         passageway_start, passageway_end = translate.fix_box_coordinates(passageway_start, passageway_end, rotation_angle)
 
+        passageway.update_start(passageway_start)
+        passageway.update_end(passageway_end)
+        passageway.update_point_of_interest((row_pixels, col_pixels))
+        passageway.update_is_vertical(rotation_angle)
+
 
         # randomly generate additional obstacles
-        additional_obstacles, (passageway_start, passageway_end) = image_augmenter.randomly_generate_obstacles_avoiding_passageway(row_pixels, col_pixels,
-                                                                                               passageway_start, passageway_end,
-                                                                                               (row_pixels, col_pixels))
+        additional_obstacles, passageway = image_augmenter.randomly_generate_obstacles_avoiding_passageway(row_pixels, col_pixels,
+                                                                                               passageway)
 
         # merge base obstacle with randomly generated obstacles
         all_img = cv.bitwise_or(base_obstacle, additional_obstacles)
         # draw rectangle
+        passageway_start = passageway.get_start()
+        passageway_end = passageway.get_end()
         passageway_start = (round(passageway_start[0]), round(passageway_start[1]))
         passageway_end = (round(passageway_end[0]), round(passageway_end[1]))
         color = (255, 0, 0)
@@ -98,15 +107,14 @@ def generate_batch(batch_size):
         cv.imshow("all_img", all_img)
         cv.waitKey(0)
 
-        # normalize passageway_start and passageway_end to [0,1] range
-        passageway_start = (passageway_start[0] / params.im_height, passageway_start[1] / params.im_width)
-        passageway_end = (passageway_end[0] / params.im_height, passageway_end[1] / params.im_width)
+        # normalize passageway to [0,1] range
+        passageway.normalize(params.im_height, params.im_width)
 
         # normalize image to [0,1] range
         all_img = all_img / 255
 
         images_batch.append(all_img)
-        labels_batch.append((passageway_start[0], passageway_start[1], passageway_end[0], passageway_end[1]))
+        labels_batch.append((*passageway.get_start(), *passageway.get_end()))
 
     images_batch = np.array(images_batch)
     labels_batch = np.array(labels_batch)
