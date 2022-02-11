@@ -13,8 +13,8 @@ class Net(nn.Module):
         self.pool = nn.MaxPool2d((2,2))
         # self.dropout = F.dropout(p=0.2)
 
-        self.fc1 = nn.Linear(6400, 3200)
-        self.fc2 = nn.Linear(3200, 4)
+        self.fc1 = nn.Linear(6400, 1600)
+        self.fc2 = nn.Linear(1600, 4)
 
     def initialize_weights(self, std=0.005):
         # self.conv1.weight.data = self.conv1.weight.data.normal_(mean=0.0, std=0.0220)

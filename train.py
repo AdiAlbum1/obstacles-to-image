@@ -97,15 +97,15 @@ def generate_batch(batch_size):
 
         # merge base obstacle with randomly generated obstacles
         all_img = cv.bitwise_or(base_obstacle, additional_obstacles)
-        # draw rectangle
-        passageway_start = passageway.get_start()
-        passageway_end = passageway.get_end()
-        passageway_start = (round(passageway_start[0]), round(passageway_start[1]))
-        passageway_end = (round(passageway_end[0]), round(passageway_end[1]))
-        color = (255, 0, 0)
-        all_img = cv.rectangle(all_img, passageway_start[::-1], passageway_end[::-1], color)
-        cv.imshow("all_img", all_img)
-        cv.waitKey(0)
+        # # draw rectangle
+        # passageway_start = passageway.get_start()
+        # passageway_end = passageway.get_end()
+        # passageway_start = (round(passageway_start[0]), round(passageway_start[1]))
+        # passageway_end = (round(passageway_end[0]), round(passageway_end[1]))
+        # color = (255, 0, 0)
+        # all_img = cv.rectangle(all_img, passageway_start[::-1], passageway_end[::-1], color)
+        # cv.imshow("all_img", all_img)
+        # cv.waitKey(0)
 
         # normalize passageway to [0,1] range
         passageway.normalize(params.im_height, params.im_width)
