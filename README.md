@@ -10,8 +10,8 @@
 
 ## Task
 Sampling based approaches for robotic motion planning suffer from the ability to find a valid path in scenes with critical narrow passageways. My project proposal is a machine-learning based solution recommending a sample point in the scene’s narrow passageway.
-A deep neural network which reads as input the image describing the scene: including its source, target and obstacles, and outputs two parameters describing the recommended sample point in the narrow passageway.
-To keep the project contained we’ll focus on a single disc robot translating in the plane.
+A deep neural network which reads as input the image describing the scene: including its source, target and obstacles, and outputs four parameters determening the bounding box describing the narrow passageway.
+To keep the project contained we’ll focus on a single disc robot translating in the plane, but we'll supply solutions for both multiple discs and also a rod translating and rotating in the plane.
 
 ## Installation
 ```sh
@@ -25,7 +25,7 @@ pipenv shell
 ## Project Description
 - ```python generate_base_obstacle_images.py ``` : Reads as input the JSON files from ```input_json_obstacles/``` contatining the scene's description, and generates binary images of the scene's obstacles
 - ``` python train.py``` : Trains a Deep Neural Network for the above regression task
-- ``` improved_prm.py``` : Our product. An improved PRM implementation where the first sampled point is given by the CNN
+- ``` DiscoPygal/mrmp/solvers/our_prm_discs.py``` : Our product. An improved PRM implementation where points are sampled using the narrow passageway outputed by the CNN
 
 ## Training Procedure
 ### Data
