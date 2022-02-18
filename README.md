@@ -35,19 +35,19 @@ pipenv shell
    The generated scenes contain various obstacle maps with vertical passageways centered at positions (0,0), (1,0), ..., (9,0)
    as in the following image
     * (4,0):
-    <br>![(0,0) - Example](samples/base_(4,0).png)
+    <br>![(4,0) - Example](samples/base_(4,0).png)
 
 2. Randomly translate the obstacle map along the y-axis
     * A slight translation up along the y-axis
-    <br>![(0,0) - Example translated](samples/base_(0,0)\_translated.png)
+    <br>![(4,0) - Example translated](samples/base_(4,0)\_translated_1.png)
     * A slight translation down along the y-axis
-    <br>![(3,0) - Example translated](samples/base_(3,0)\_translated.png)
+    <br>![(4,0) - Example translated](samples/base_(4,0)\_translated_2.png)
 
 3. Randomly rotate the image around its center with {0, 90, 180, 270} degrees
     * A rotation by 90 degrees
-    <br>![(0,0) - Example rotated](samples/base_(0,0)\_rotated.png)
+    <br>![(4,0) - Example rotated](samples/base_(4,0)\_rotated_1.png)
     * A rotation by 180 degrees
-    <br>![(3,0) - Example rotated](samples/base_(3,0)\_rotated.png)
+    <br>![(4,0) - Example rotated](samples/base_(4,0)\_rotated_2.png)
 
 4. Randomly scattered additional obstacles
     * ![(0,0) - With scattered obstacles](samples/base_(0,0)\_with_obstacles.png)
