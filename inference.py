@@ -5,8 +5,7 @@ import params
 from generate_base_obstacle_images import generate_obstacle_image
 from aux_scripts import translate
 
-# from models.current_best.net import Net
-from net import Net
+from models.current_best.net import Net
 
 
 def find_narrow_passageway(input_path):
