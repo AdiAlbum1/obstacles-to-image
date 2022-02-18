@@ -16,12 +16,11 @@ import conversions
 import sum_distances
 import bounding_box
 import inference
-from aux_scripts import translate
+from aux_scripts import translate, sample_points_drawer
 
 
 # Number of nearest neighbors to search for in the k-d tree
-# K = 15
-K = 10
+K = 15
 
 # generate_path() is our main PRM function
 # it constructs a PRM (probabilistic roadmap)
@@ -69,17 +68,23 @@ def generate_path_disc(scene, robots, obstacles, disc_obstacles, destinations, a
     pw_start = pw_start_row, pw_start_col
     pw_end = pw_end_row, pw_end_col
 
-    # draw box
-    color = (255, 0, 0)
-    scene_img = cv.rectangle(scene_img, pw_start[::-1], pw_end[::-1], color)
-    cv.imshow("scene_img", scene_img)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
+    # # ~~~ UNCOMMENT FOR BOUNDING BOX VISUALIZATION ~~~
+    # color = (255, 0, 0)
+    # img = cv.cvtColor(scene_img, cv.COLOR_GRAY2BGR)
+    # img = cv.rectangle(img, pw_start[::-1], pw_end[::-1], color)
+    # cv.imshow("scene_img", img)
+    # cv.imwrite("evaluate\\bounding_box.png", img)
+    # cv.waitKey(0)
+    # cv.destroyAllWindows()
 
     pw_start_coords = translate.pixels_to_coordinates(pw_start[0], pw_start[1])
     pw_end_coords = translate.pixels_to_coordinates(pw_end[0], pw_end[1])
 
     n_NP = num_landmarks // 2
+    # n_NP = 0
+
+    narrow_passageway_landmarks = []
+    remaining_landmarks = []
 
     ######################
     # Sampling landmarks
@@ -91,14 +96,27 @@ def generate_path_disc(scene, robots, obstacles, disc_obstacles, destinations, a
 
         if i < n_NP:
             p = sample_valid_landmark_in_narrow_passageway(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii,
-                                                             pw_start_coords, pw_end_coords)
+                                                             pw_start_coords, pw_end_coords, narrow_passageway_landmarks)
         else:
-            p = sample_valid_landmark(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii)
+            p = sample_valid_landmark(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii, remaining_landmarks)
         G.add_node(p)
         points.append(p)
         if i % 500 == 0:
             print(i, "landmarks sampled", file=writer)
     print(num_landmarks, "landmarks sampled", file=writer)
+
+    # # ~~~ UNCOMMENT FOR SAMPLING POINT VISUALIZATION ~~~
+    # scene_with_landmarks = cv.cvtColor(scene_img, cv.COLOR_GRAY2RGB)
+    # scene_with_landmarks = sample_points_drawer.draw_sample_points(scene_with_landmarks, narrow_passageway_landmarks, True)
+    # scene_with_landmarks = sample_points_drawer.draw_sample_points(scene_with_landmarks, remaining_landmarks, False)
+    #
+    # cv.imshow("scene", scene_img)
+    # cv.imshow("scene with landmarks", scene_with_landmarks)
+    # cv.waitKey(0)
+    #
+    # cv.imwrite("evaluate\\scene\\scene.png", scene_img)
+    # cv.imwrite("evaluate\\scene\\our_prm_samples.png", scene_with_landmarks)
+    #
 
     ### !!!
     # Distnace functions
@@ -171,7 +189,7 @@ def point_d_to_arr(p: Point_d):
     return [p[i].to_double() for i in range(p.dimension())]
 
 # find one free landmark (milestone) within the bounding box
-def sample_valid_landmark(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii):
+def sample_valid_landmark(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii, remaining_landmarks):
     while True:
         points = []
         # for each robot check that its configuration (point) is in the free space
@@ -180,6 +198,7 @@ def sample_valid_landmark(min_x, max_x, min_y, max_y, collision_detectors, num_r
             rand_y = FT(random.uniform(min_y, max_y))
             p = Point_2(rand_x, rand_y)
             if collision_detectors[i].is_point_valid(p):
+                remaining_landmarks.append((rand_x.to_double(), rand_y.to_double()))
                 points.append(p)
             else:
                 break
@@ -188,7 +207,7 @@ def sample_valid_landmark(min_x, max_x, min_y, max_y, collision_detectors, num_r
             return conversions.to_point_d(points)
 
 def sample_valid_landmark_in_narrow_passageway(min_x, max_x, min_y, max_y, collision_detectors, num_robots, radii,
-                                                 pw_start_coords, pw_end_coords):
+                                                 pw_start_coords, pw_end_coords, narrow_passageway_landmarks):
 
     np_std = 1
     while True:
@@ -206,6 +225,7 @@ def sample_valid_landmark_in_narrow_passageway(min_x, max_x, min_y, max_y, colli
 
             p = Point_2(rand_x, rand_y)
             if collision_detectors[i].is_point_valid(p):
+                narrow_passageway_landmarks.append((rand_x.to_double(), rand_y.to_double()))
                 points.append(p)
             else:
                 break

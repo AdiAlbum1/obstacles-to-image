@@ -11,6 +11,7 @@ import cv2 as cv
 import inference
 from DiscoPygal.geometry_utils.collision_detection import Collision_detector
 from aux_scripts import sample_points_drawer
+from aux_scripts import translate
 
 def calc_bbox(obstacles, origin, destination, length):
     X = []
@@ -66,21 +67,25 @@ def generate_path(scene, length, obstacles, origin, destination, argument, write
 
     cd = Collision_detector(polygons, [], epsilon)
 
-    # Number of points to sample near narrow passageway
-    n_NP = num_landmarks // 15 + 1
-    np_std = min(n_NP/35.0, 1.5)
-
     # The number of nearest neighbors each vertex will try to connect to
-    # K = min(20, num_landmarks)
-    K = min(n_NP + 3, 20)
+    K = 15
+    # Number of points to sample near narrow passageway
+    n_NP = num_landmarks // 2
 
-    scene_img, narrow_passageway_pos = inference.find_narrow_passageway(scene)
-    print(scene_img.shape)
-    # narrow_passageway_pos = (0, 0)
-    print("Narrow passageway: " + str(narrow_passageway_pos), file=writer)
-    print("Num samples near passageway: " + str(n_NP), file=writer)
-    print("Samples std = " + str(np_std), file=writer)
-    print("K = " + str(K), file=writer)
+    scene_img, net_output = inference.find_narrow_passageway(scene)
+    pw_start_row, pw_start_col, pw_end_row, pw_end_col = net_output
+    pw_start = pw_start_row, pw_start_col
+    pw_end = pw_end_row, pw_end_col
+
+    # ~~~ UNCOMMENT FOR BOUNDING BOX VISUALIZATION ~~~
+    color = (255, 0, 0)
+    scene_img = cv.rectangle(scene_img, pw_start[::-1], pw_end[::-1], color)
+    cv.imshow("scene_img", scene_img)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+
+    pw_start_coords = translate.pixels_to_coordinates(pw_start[0], pw_start[1])
+    pw_end_coords = translate.pixels_to_coordinates(pw_end[0], pw_end[1])
 
     narrow_passageway_landmarks = []
     remaining_landmarks = []
@@ -88,8 +93,8 @@ def generate_path(scene, length, obstacles, origin, destination, argument, write
     while i < num_landmarks:
         # sample new landmark
         if i < n_NP:
-            rand_x = FT(random.gauss(mu=narrow_passageway_pos[0], sigma=np_std))
-            rand_y = FT(random.gauss(mu=narrow_passageway_pos[1], sigma=np_std))
+            rand_x = FT(random.uniform(pw_start_coords[0], pw_end_coords[0]))
+            rand_y = FT(random.uniform(pw_start_coords[1], pw_end_coords[1]))
             rand_z = FT(random.uniform(z_range[0], z_range[1]))
 
         else:

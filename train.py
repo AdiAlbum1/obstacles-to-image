@@ -169,9 +169,9 @@ if __name__ == "__main__":
             optimizer.step()
 
             # print results
-            if i % 60 == 0:
+            if i % 200 == 0:
                 # current train loss
-                curr_train_loss = train_loss / 60
+                curr_train_loss = train_loss / 200
 
                 net.eval()
                 # current test loss
@@ -184,7 +184,7 @@ if __name__ == "__main__":
                 net.train()
 
                 # log results
-                print(str(i // 60) + "/" + str(params.num_batches_in_epoch // 60) + ":\tTrain loss: " + str(
+                print(str(i // 200) + "/" + str(params.num_batches_in_epoch // 200) + ":\tTrain loss: " + str(
                     curr_train_loss) + ", Test loss: " + str(test_loss))
                 mlflow.log_metrics({"train_loss": curr_train_loss, "test_loss": test_loss})
 
@@ -192,7 +192,7 @@ if __name__ == "__main__":
                 if test_loss < best_test_loss:
                     best_test_loss = test_loss
                     torch.save(net.state_dict(), "test_model.pt")
-                    print(str(i // 60) + " BEST MODEL - TRAIN LOSS " + str(curr_train_loss) + "\tTEST LOSS " + str(best_test_loss))
+                    print(str(i // 200) + " BEST MODEL - TRAIN LOSS " + str(curr_train_loss) + "\tTEST LOSS " + str(best_test_loss))
 
                 train_loss = 0
 
