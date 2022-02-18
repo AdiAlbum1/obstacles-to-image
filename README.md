@@ -32,12 +32,10 @@ pipenv shell
 1. Randomly select a base obstacle map with a single critical passageway.
    <br>We manually generated multiple base obstacles maps with single critical passageways using CGAL's scene designer.
    The JSON files describing the scenes were tranformed to images using ```generate_base_obstacle_images.py```
-   The generated scenes contain various obstacle maps with horizontal passageways at positions (0,0), (1,0), ..., (8,0)
-   as in the following images
-    * (0,0):
-    <br>![(0,0) - Example](samples/base_(0,0).png)
-    * (3,0):
-    <br>![(3,0) - Example](samples/base_(3,0).png)
+   The generated scenes contain various obstacle maps with vertical passageways centered at positions (0,0), (1,0), ..., (9,0)
+   as in the following image
+    * (4,0):
+    <br>![(0,0) - Example](samples/base_(4,0).png)
 
 2. Randomly translate the obstacle map along the y-axis
     * A slight translation up along the y-axis
