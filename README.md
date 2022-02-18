@@ -70,8 +70,8 @@ This model was integrated in two PRM based solutions: ```DiscoPygal/mrmp/solvers
 ### Experimental Results
 We'll view the following 4 scenes, each containing a single narrow passageway
 <br>![Scenes](samples/scenes.PNG)
-With the following results outputed by the CNN
+<br>With the following results outputed by the CNN
 <br>![Scenes results](samples/scenes_boxes.png)
-The bounding boxes representing the narrow passageways.
-The following figure shows the diffrences in running Naive sampling-based methods vs using ours:
+<br>The bounding boxes representing the narrow passageways.
+<br>The following figure shows the diffrences in running Naive sampling-based methods vs using ours:
 <br>![Scenes sampled](samples/scenes_samples.png)
