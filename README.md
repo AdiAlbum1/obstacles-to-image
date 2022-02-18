@@ -6,6 +6,7 @@
 - [Installation](#installation)
 - [Project Description](#project-description)
 - [Training Procedure](#training-procedure)
+- [Model](#model)
 - [Results](#results)
 
 ## Task
@@ -57,4 +58,12 @@ pipenv shell
     * ![(4,0) - With ground truth](samples/base_(4,0)\_gt_1.png)
     * ![(4,0) - With ground truth](samples/base_(4,0)\_gt_2.png)
 
+## Model
+A deep learning model with a standard architecture of a convolutional neural network. ```net.py``` contains the full description.
+The network inputs a 64x64 grayscale image and outputs a vector of size 4 uniquely determining the bounding box describing the narrow passageway.
+The model is trained as a regression task, with a batch size of 32, the standard Adam optimization technique and the Mean Squared Error loss function.
+
 ## Results
+![Train and Tess Loss](samples/loss.png)
+The best model obtained a MSE train loss of 0.0033 and a MSE test loss of 0.0030 on a test set of size 1,500 scenes and respective narrow passageways.
+This model was integrated in two PRM based solutions: ```DiscoPygal/mrmp/solvers/dlprm_disc.py```, and ```DiscoPygal/rod/solvers/dlprm_rod.py```.
