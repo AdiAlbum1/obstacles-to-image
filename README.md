@@ -50,12 +50,12 @@ pipenv shell
     <br>![(4,0) - Example rotated](samples/base_(4,0)\_rotated_2.png)
 
 4. Randomly scattered additional obstacles
-    * ![(0,0) - With scattered obstacles](samples/base_(0,0)\_with_obstacles.png)
-    * ![(3,0) - With scattered obstacles](samples/base_(3,0)\_with_obstacles.png)
+    * ![(4,0) - With scattered obstacles](samples/base_(4,0)\_obstacles_1.png)
+    * ![(4,0) - With scattered obstacles](samples/base_(4,0)\_obstacles_2.png)
 
-5. Ground truth positions are maintained with above augmentations
-    * ![(0,0) - With ground truth](samples/base_(0,0)\_with_obstacles_gt.png)
-    * ![(3,0) - With ground truth](samples/base_(3,0)\_with_obstacles_gt.png)
+5. Ground truth passageways are maintained with above augmentations
+    * ![(4,0) - With ground truth](samples/base_(4,0)\_gt_1.png)
+    * ![(4,0) - With ground truth](samples/base_(4,0)\_gt_2.png)
 
 ### Model
 
