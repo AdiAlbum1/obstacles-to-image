@@ -13,6 +13,7 @@
 Sampling based approaches for robotic motion planning suffer from the ability to find a valid path in scenes with critical narrow passageways. My project proposal is a machine-learning based solution recommending a sample point in the scene’s narrow passageway.
 A deep Convolutional Neural Network which reads as input the image describing the scene: including its source, target and obstacles, and outputs four parameters determening the bounding box describing the narrow passageway.
 To keep the project contained we’ll focus on a single disc robot translating in the plane, but we'll supply solutions for both multiple discs and also a rod translating and rotating in the plane.
+<br>![narrow passageways](samples/large_medium_narrow_passageways.png)
 
 ## Installation
 ```sh
