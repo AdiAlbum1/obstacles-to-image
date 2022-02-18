@@ -67,3 +67,6 @@ The model is trained as a regression task, with a batch size of 32, the standard
 ![Train and Tess Loss](samples/loss.png)
 The best model obtained a MSE train loss of 0.0033 and a MSE test loss of 0.0030 on a test set of size 1,500 scenes and respective narrow passageways.
 This model was integrated in two PRM based solutions: ```DiscoPygal/mrmp/solvers/dlprm_disc.py```, and ```DiscoPygal/rod/solvers/dlprm_rod.py```.
+### Experimental Results
+We'll view the following 4 scenes, each containing a single narrow passageway
+![Scenes](samples/scenes.png)
