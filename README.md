@@ -4,9 +4,9 @@
 
 - [Task](#task)
 - [Installation](#installation)
-- [Project Description](#project_description)
-- [Training Procedure](#training_procedure)
-- [Usage](#usage)
+- [Project Description](#project-description)
+- [Training Procedure](#training-procedure)
+- [Results](#results)
 
 ## Task
 Sampling based approaches for robotic motion planning suffer from the ability to find a valid path in scenes with critical narrow passageways. My project proposal is a machine-learning based solution recommending a sample point in the scene’s narrow passageway.
@@ -57,7 +57,4 @@ pipenv shell
     * ![(4,0) - With ground truth](samples/base_(4,0)\_gt_1.png)
     * ![(4,0) - With ground truth](samples/base_(4,0)\_gt_2.png)
 
-### Model
-
-## Usage
-TBD
+## Results
