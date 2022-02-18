@@ -69,4 +69,9 @@ The best model obtained a MSE train loss of 0.0033 and a MSE test loss of 0.0030
 This model was integrated in two PRM based solutions: ```DiscoPygal/mrmp/solvers/dlprm_disc.py```, and ```DiscoPygal/rod/solvers/dlprm_rod.py```.
 ### Experimental Results
 We'll view the following 4 scenes, each containing a single narrow passageway
-![Scenes](samples/scenes.PNG)
+<br>![Scenes](samples/scenes.PNG)
+With the following results outputed by the CNN
+<br>![Scenes results](samples/scenes_boxes.png)
+The bounding boxes representing the narrow passageways.
+The following figure shows the diffrences in running Naive sampling-based methods vs using ours:
+<br>![Scenes sampled](samples/scenes_samples.png)
