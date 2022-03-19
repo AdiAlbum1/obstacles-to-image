@@ -15,4 +15,4 @@ num_batches_in_epoch = 20000
 num_test_set_batches = 30
 
 # Inference parameters
-network_path = ".\\models\\current_best\\test_model.pt"
+network_path = "./models/current_best/test_model.pt"
